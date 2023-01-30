@@ -17,5 +17,8 @@ export default {
     roomId(state) {
         return state.roomId
     },
+    gameRoom(state) {
+        return state
+    }
 
 }

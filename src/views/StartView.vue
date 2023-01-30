@@ -5,6 +5,7 @@
         <div class="card">
           <div class="card-body">
             <h1 class="card-title mb-4 text-center h1">PlayGround</h1>
+            <div>{{ gameRoom }}</div>
             <form @submit.prevent="submitStart">
               <div class="mb-3 text-center">
                 <label class="form-label">Join As [{{ mode }}]</label>
@@ -30,8 +31,7 @@
                       v-model="mode"
                       class="form-selectgroup-input"
                     />
-                    <span class="form-selectgroup-label"
-                      ><!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                    <span class="form-selectgroup-label">
                       <i class="fas fa-user-crown"></i> Host
                     </span>
                   </label>
@@ -43,8 +43,7 @@
                       v-model="mode"
                       class="form-selectgroup-input"
                     />
-                    <span class="form-selectgroup-label"
-                      ><!-- Download SVG icon from http://tabler-icons.io/i/circle -->
+                    <span class="form-selectgroup-label">
                       <i class="fas fa-users-crown"></i>
                       Co-host
                     </span>
@@ -57,8 +56,7 @@
                       v-model="mode"
                       class="form-selectgroup-input"
                     />
-                    <span class="form-selectgroup-label"
-                      ><!-- Download SVG icon from http://tabler-icons.io/i/square -->
+                    <span class="form-selectgroup-label">
                       <i class="fas fa-tv"></i> Spectator
                     </span>
                   </label>
@@ -68,7 +66,6 @@
               <div v-if="mode == 'player'">
                 <div class="input-icon mb-3">
                   <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <i class="fas fa-door-open"></i>
                   </span>
                   <input
@@ -81,7 +78,6 @@
                 </div>
                 <div class="input-icon mb-3">
                   <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <i class="fas fa-user"></i>
                   </span>
                   <input
@@ -96,7 +92,6 @@
               <div v-if="mode == 'co-host'">
                 <div class="input-icon mb-3">
                   <span class="input-icon-addon">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                     <i class="fas fa-door-open"></i>
                   </span>
                   <input
@@ -158,6 +153,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -176,12 +172,24 @@ export default {
       alert("Boi " + data.name);
     });
     this.$socket.on("startHostComplete", (data) => {
-      console.log(data);
-      alert("Create Complete");
+      // console.log(data);
+      // alert("Create Complete");
+      this.$store.commit("setHost", data);
+      let grl = localStorage.getItem("gameRoomList");
+      // console.log(grl);
+      localStorage.setItem("gameRoomNow", JSON.stringify(data));
+      if (grl == null || grl == "") {
+        localStorage.setItem("gameRoomList", JSON.stringify([data]));
+      } else {
+        let grla = JSON.parse(grl);
+        grla.push(data);
+        localStorage.setItem("gameRoomList", JSON.stringify(grla));
+      }
       this.$router.replace("/host");
     });
   },
   computed: {
+    ...mapGetters(["gameRoom"]),
     subButton() {
       if (this.mode == "host") {
         return "Create Room";
