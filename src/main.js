@@ -2,5 +2,26 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import Socketio from '@/plugins/Socket.io';
 
-createApp(App).use(store).use(router).mount('#app')
+
+import '@tabler/core'
+import '@tabler/core/dist/css/tabler.min.css'
+import '@tabler/core/dist/css/tabler-flags.min.css'
+import '@tabler/core/dist/css/tabler-payments.min.css'
+import '@tabler/core/dist/css/tabler-vendors.min.css'
+import '@tabler/core/dist/js/tabler.esm'
+
+
+
+
+const app = createApp(App)
+app.use(store).use(router)
+app.use(Socketio, {
+    connection: 'http://192.168.66.8:3000',
+    options: {
+        // Your Socket.io options here
+    }
+})
+
+app.mount('#app')
