@@ -18,7 +18,7 @@ import '@tabler/core/dist/js/tabler.esm'
 const app = createApp(App)
 app.use(store).use(router)
 app.use(Socketio, {
-    connection: 'http://157.245.194.71:3000',
+    connection: 'http://192.168.66.8:3000',
     options: {
         // Your Socket.io options here
     }

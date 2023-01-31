@@ -1,6 +1,6 @@
 export default {
-    id(state) {
-        return state.id
+    uuid(state) {
+        return state.uuid
     },
     game(state) {
         return state.game
@@ -19,6 +19,15 @@ export default {
     },
     gameRoom(state) {
         return state
+    },
+    gameName(state) {
+        switch (state.game) {
+            case "GTM":
+                return "Guesstimate";
+
+            default:
+                return "";
+        }
     }
 
 }

@@ -5,7 +5,7 @@ export default {
     state() {
         return {
             game: "",
-            id: "",
+            uuid: "",
             playerName: "",
             mode: "",
             passCode: "",

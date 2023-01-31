@@ -1,10 +1,26 @@
+import HostViewVue from '@/views/HostView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import StartView from '../views/StartView.vue'
+import PlayViewVue from '../views/PlayView.vue'
+import DebugView from '../views/DebugView.vue'
 
 const routes = [{
         path: '/start',
-        name: 'home',
+        name: 'start',
         component: StartView
+    }, {
+        path: '/host',
+        name: 'host',
+        component: HostViewVue
+    }, {
+        path: '/play',
+        name: 'play',
+        component: PlayViewVue
+    },
+    {
+        path: '/debug',
+        name: 'debug',
+        component: DebugView
     },
     {
         path: '/about',

@@ -8,9 +8,16 @@ export default {
     },
     setHost(state, payload) {
         state.game = payload.game
-        state.id = payload.id
+        state.uuid = payload.uuid
         state.mode = payload.mode
         state.passCode = payload.passCode
         state.roomId = payload.roomId
+    },
+    setPlayer(state, payload) {
+        state.game = payload.game
+        state.uuid = payload.uuid
+        state.mode = payload.mode
+        state.roomId = payload.roomId
+        state.playerName = payload.playerName
     }
 }
