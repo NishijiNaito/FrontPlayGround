@@ -5,10 +5,10 @@
         <div class="card">
           <div class="card-body">
             <h1 class="card-title mb-4 text-center h1">PlayGround</h1>
-            <div>{{ gameRoom }}</div>
+            <!-- <div>{{ gameRoom }}</div> -->
             <form @submit.prevent="submitStart">
               <div class="mb-3 text-center">
-                <label class="form-label">Join As [{{ mode }}]</label>
+                <label class="form-label">Join As</label>
                 <div class="form-selectgroup">
                   <label class="form-selectgroup-item">
                     <input
@@ -71,7 +71,7 @@
                   <input
                     type="text"
                     class="form-control"
-                    v-model="room_id"
+                    v-model="roomId"
                     placeholder="Room ID"
                     required
                   />
@@ -83,7 +83,7 @@
                   <input
                     type="text"
                     class="form-control"
-                    v-model="player_name"
+                    v-model="playerName"
                     placeholder="Player Name"
                     required
                   />
@@ -97,7 +97,7 @@
                   <input
                     type="text"
                     class="form-control"
-                    v-model="room_id"
+                    v-model="roomId"
                     placeholder="Room ID"
                     required
                   />
@@ -109,8 +109,8 @@
                   <input
                     type="text"
                     class="form-control"
-                    v-model="passcode"
-                    placeholder="Passcode"
+                    v-model="passCode"
+                    placeholder="passCode"
                     required
                   />
                 </div>
@@ -123,7 +123,7 @@
                   <input
                     type="text"
                     class="form-control"
-                    v-model="room_id"
+                    v-model="roomId"
                     placeholder="Room ID"
                     required
                   />
@@ -158,26 +158,20 @@ export default {
   data() {
     return {
       mode: "player",
-      player_name: "",
+      playerName: "",
       game: "GTM",
-      room_id: "",
-      passcode: "",
+      roomId: "",
+      passCode: "",
     };
   },
   mounted() {
-    // this.$socket.on("foralert", () => {
-    //   alert("sock_connected");
-    // });
-    this.$socket.on("boi", (data) => {
-      alert("Boi " + data.name);
-    });
     this.$socket.on("startHostComplete", (data) => {
-      // console.log(data);
+      console.log(data);
       // alert("Create Complete");
       this.$store.commit("setHost", data);
       let grl = localStorage.getItem("gameRoomList");
-      // console.log(grl);
-      localStorage.setItem("gameRoomNow", JSON.stringify(data));
+      console.log(grl);
+      localStorage.setItem("gameRoomHostNow", JSON.stringify(data));
       if (grl == null || grl == "") {
         localStorage.setItem("gameRoomList", JSON.stringify([data]));
       } else {
@@ -186,6 +180,27 @@ export default {
         localStorage.setItem("gameRoomList", JSON.stringify(grla));
       }
       this.$router.replace("/host");
+    });
+    this.$socket.on("notFound", () => {
+      alert("ไม่พบห้องที่ค้นหา");
+    });
+    this.$socket.on("roomRunning", () => {
+      alert("ห้องกำลังเล่นอยู่");
+    });
+    this.$socket.on("startJoinComplete", (data) => {
+      console.log(data);
+      this.$store.commit("setPlayer", data);
+      let grl = localStorage.getItem("gameRoomList");
+      console.log(grl);
+      localStorage.setItem("gameRoomPlayerNow", JSON.stringify(data));
+      if (grl == null || grl == "") {
+        localStorage.setItem("gameRoomList", JSON.stringify([data]));
+      } else {
+        let grla = JSON.parse(grl);
+        grla.push(data);
+        localStorage.setItem("gameRoomList", JSON.stringify(grla));
+      }
+      this.$router.replace("/play");
     });
   },
   computed: {
@@ -205,10 +220,10 @@ export default {
     submitStart() {
       this.$socket.emit("submitStart", {
         mode: this.mode,
-        player_name: this.player_name,
+        playerName: this.playerName,
         game: this.game,
-        room_id: this.room_id,
-        passcode: this.passcode,
+        roomId: this.roomId,
+        passCode: this.passCode,
       });
     },
   },
