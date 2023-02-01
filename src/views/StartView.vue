@@ -203,6 +203,12 @@ export default {
       this.$router.replace("/play");
     });
   },
+  unmounted() {
+    this.$socket.off("startHostComplete");
+    this.$socket.off("notFound");
+    this.$socket.off("roomRunning");
+    this.$socket.off("startJoinComplete");
+  },
   computed: {
     ...mapGetters(["gameRoom"]),
     subButton() {

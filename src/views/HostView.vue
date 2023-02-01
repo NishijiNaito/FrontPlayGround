@@ -78,7 +78,9 @@
             </div>
           </div>
 
-          <div v-else-if="roomStatus == 'INPLAY'"></div>
+          <div v-else-if="roomStatus == 'INPLAY'" class="mt-4">
+            <guesstimate-console></guesstimate-console>
+          </div>
           <div v-else></div>
         </transition>
         <!-- {{ gameRoom }} -->
@@ -89,8 +91,10 @@
 
 <script>
 import { mapGetters } from "vuex";
+import GuesstimateConsole from "../components/Host/GuesstimateConsole.vue";
 
 export default {
+  components: { GuesstimateConsole },
   data() {
     return {
       playersOnline: [],
@@ -140,6 +144,12 @@ export default {
       this.roomStatus = "REG";
     });
   },
+  unmounted() {
+    this.$socket.off("noRoom");
+    this.$socket.off("hostRoomInfo");
+    this.$socket.off("roomStart");
+    this.$socket.off("roomEnd");
+  },
   methods: {
     roomStart() {
       this.$socket.emit("roomStart", this.gameRoom);
@@ -186,5 +196,9 @@ export default {
     transform: scaleX(1);
     opacity: 1;
   }
+}
+
+.pre-formatted {
+  white-space: pre;
 }
 </style>
