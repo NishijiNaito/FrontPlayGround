@@ -17,7 +17,10 @@
                   <h3 class="mb-2 text-center">
                     Waiting For Host Started Game
                   </h3>
-                  <h3 class="mb-0 text-center">Game Name : {{ gameName }}</h3>
+                  <h3 class="mb-3 text-center">Game Name : {{ gameName }}</h3>
+                  <button @click="leaveRoom" class="btn btn-danger w-100">
+                    Leave Room
+                  </button>
 
                   <!-- <div>{{ gameRoom }}</div> -->
                 </div>
@@ -26,15 +29,20 @@
           </div>
         </div>
       </div>
-      <div v-else></div>
+      <div v-else>
+        <guesstimate-play v-if="gameRoom.game == 'GTM'"></guesstimate-play>
+      </div>
     </transition>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import GuesstimatePlay from "../components/Player/GuesstimatePlay.vue";
 
 export default {
+  components: { GuesstimatePlay },
+
   data() {
     return {
       roomStatus: "REG",
@@ -66,6 +74,13 @@ export default {
   mounted() {
     this.$socket.on("noRoom", () => {
       localStorage.clear("gameRoomPlayerNow");
+      this.$store.commit("setPlayer", {
+        roomId: "",
+        mode: "",
+        game: "",
+        uuid: "",
+        playerName: "",
+      });
       this.$router.replace("/start");
     });
     this.$socket.on("playerRoomInfo", (data) => {
@@ -79,6 +94,17 @@ export default {
     this.$socket.on("roomEnd", () => {
       this.roomStatus = "REG";
     });
+  },
+  unmounted() {
+    this.$socket.off("noRoom");
+    this.$socket.off("playerRoomInfo");
+    this.$socket.off("roomStart");
+    this.$socket.off("roomEnd");
+  },
+  methods: {
+    leaveRoom() {
+      this.$socket.emit("playerLeave", this.gameRoom);
+    },
   },
 };
 </script>

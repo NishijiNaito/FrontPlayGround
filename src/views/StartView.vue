@@ -73,6 +73,7 @@
                     class="form-control"
                     v-model="roomId"
                     placeholder="Room ID"
+                    inputmode="numeric"
                     required
                   />
                 </div>
@@ -99,6 +100,7 @@
                     class="form-control"
                     v-model="roomId"
                     placeholder="Room ID"
+                    inputmode="numeric"
                     required
                   />
                 </div>
@@ -125,6 +127,7 @@
                     class="form-control"
                     v-model="roomId"
                     placeholder="Room ID"
+                    inputmode="numeric"
                     required
                   />
                 </div>
