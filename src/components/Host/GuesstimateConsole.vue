@@ -8,9 +8,9 @@
               <button @click="guessPrice" class="btn btn-warning me-3">
                 Guess Price
               </button>
-              <button @click="guessPrice" class="btn btn-warning me-3">
+              <!-- <button @click="guessPrice" class="btn btn-warning me-3">
                 Guess Price
-              </button>
+              </button> -->
             </div>
             <form @submit.prevent="startQuiz">
               <div class="row justify-content-center">
@@ -66,7 +66,7 @@
                     />
                     <input
                       type="text"
-                      pattern="-?\d*\.?\d*"
+                      pattern="-?[0-9]*([.][0-9]{1,})?"
                       class="form-control"
                       id="answer"
                       placeholder="Answer"
@@ -86,6 +86,54 @@
                   </div>
                 </div>
               </div>
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="my-input">ไฟล์รูปภาพ</label>
+                    <input
+                      v-if="
+                        this.gameData.quiz.questionPic.length == 0 ||
+                        this.gameData.quiz.questionPic.search('data:image/') !=
+                          -1
+                      "
+                      id="my-input"
+                      class="form-control"
+                      @change="handleImage"
+                      type="file"
+                      accept="image/*"
+                    />
+                  </div>
+
+                  <div class="mt-1">
+                    <input
+                      v-if="
+                        this.gameData.quiz.questionPic.search('data:image/') ==
+                        -1
+                      "
+                      type="text"
+                      class="form-control"
+                      placeholder="Pic URL"
+                      aria-label="Prefix"
+                      v-model="this.gameData.quiz.questionPic"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <button
+                    class="btn btn-primary w-100 mt-1"
+                    type="button"
+                    @click="showPic = !showPic"
+                  >
+                    {{ showPic ? "ปิด" : "เปิด" }}รูป
+                  </button>
+                  <img
+                    v-if="showPic"
+                    style="width: 100%"
+                    :src="this.gameData.quiz.questionPic"
+                  />
+                </div>
+              </div>
+
               <button type="submit" class="w-100 btn btn-info mt-3">
                 Start Question
               </button>
@@ -108,6 +156,21 @@
               {{ gameData.quiz.answerPrefix }} {{ gameData.answer.answer }}
               {{ gameData.quiz.answerSuffix }}
             </h2>
+            <button
+              @click="revealAnswer"
+              v-if="gameData.inGameStage == 1"
+              class="w-100 btn btn-success mb-3"
+            >
+              Reveal Answer
+            </button>
+            <button
+              @click="revealCorrect"
+              v-if="gameData.inGameStage == 2"
+              class="w-100 btn btn-lime mb-3"
+            >
+              Reveal Corect
+            </button>
+            <!-- {{ playerData }} -->
             <!--
             <div class="text-center pre-formatted">
               {{ gameData.quiz.question }}
@@ -150,6 +213,21 @@
             >
               <h1>Answered</h1>
             </div>
+            <div
+              class="card-body"
+              v-else-if="gameData.inGameStage == 2 && pl.lockDown == false"
+            >
+              <h1>Not Answer</h1>
+            </div>
+            <div
+              class="card-body"
+              v-else-if="gameData.inGameStage == 2 && pl.lockDown == true"
+            >
+              <h1>
+                {{ gameData.quiz.answerPrefix }} {{ pl.ans }}
+                {{ gameData.quiz.answerSuffix }}
+              </h1>
+            </div>
             <div v-else></div>
           </transition>
         </div>
@@ -166,6 +244,7 @@ export default {
     return {
       gameData: {},
       playerData: [],
+      showPic: false,
     };
   },
   computed: {
@@ -213,6 +292,7 @@ export default {
         quiz: {
           questionType: "",
           question: "",
+          questionPic: "",
           questionExplain: "",
           answerPrefix: "",
           answerSuffix: "",
@@ -233,9 +313,94 @@ export default {
       });
       this.$socket.emit("hostGameUpdate", dat);
     },
+    revealAnswer() {
+      let dat = {
+        roomId: this.gameRoom.roomId,
+        passCode: this.gameRoom.passCode,
+        mode: this.gameRoom.mode,
+        game: this.gameRoom.game,
+        uuid: this.gameRoom.uuid,
+      };
+      dat.gameData = this.gameData;
+      dat.gameData.inGameStage = 2; // for start question
+      dat.playerData = this.playerData;
+      this.$socket.emit("hostGameUpdate", dat);
+    },
+    revealCorrect() {
+      let ans = +this.gameData.answer.answer;
+
+      let pd = JSON.parse(JSON.stringify(this.playerData)); // for Not Same Array
+      if (this.gameData.quiz.questionType == "E") {
+        // Closed Answer
+        pd.forEach((e) => {
+          if (e.lockDown) {
+            e.size = Math.abs(+e.ans - ans);
+          }
+        });
+        console.log(pd);
+
+        pd.sort((a, b) => {
+          // hight to low
+          return b.size - a.size;
+        });
+
+        let max = pd[0].size;
+        let score = 1;
+
+        pd.forEach((e) => {
+          if (e.lockDown) {
+            if (e.size < max) {
+              score += 1;
+              max = e.size;
+            }
+            e.score += score;
+            e.answerStatus = score;
+          }
+        });
+        this.playerData.forEach((e, i) => {
+          let idx = pd.findIndex((el) => {
+            return el.uuid == e.uuid;
+          });
+          this.playerData[i] = pd[idx];
+        });
+      }
+
+      // For Gather
+
+      let dat = {
+        roomId: this.gameRoom.roomId,
+        passCode: this.gameRoom.passCode,
+        mode: this.gameRoom.mode,
+        game: this.gameRoom.game,
+        uuid: this.gameRoom.uuid,
+      };
+      dat.gameData = this.gameData;
+      dat.gameData.inGameStage = 3; // for start question
+      dat.playerData = this.playerData;
+      this.$socket.emit("hostGameUpdate", dat);
+    },
     guessPrice() {
       this.gameData.quiz.question = "สิ่งนี้ ราคาเท่าไหร่ ?";
       this.gameData.quiz.answerSuffix = "บาท";
+    },
+
+    async handleImage(e) {
+      // console.log(e.target.files.length);
+      // return;
+      if (e.target.files.length > 0) {
+        const selecetImg = e.target.files[0];
+
+        this.createBase64Image(selecetImg);
+      } else {
+        this.gameData.quiz.questionPic = "";
+      }
+    },
+    createBase64Image(fileObj) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.gameData.quiz.questionPic = e.target.result;
+      };
+      reader.readAsDataURL(fileObj);
     },
   },
 };
