@@ -231,13 +231,17 @@ export default {
       this.$socket.emit("hehe");
     },
     submitStart() {
-      this.$socket.emit("submitStart", {
-        mode: this.mode,
-        playerName: this.playerName,
-        game: this.game,
-        roomId: this.roomId,
-        passCode: this.passCode,
-      });
+      if (this.mode == "spectator") {
+        this.$router.replace("/spectator/" + this.roomId);
+      } else {
+        this.$socket.emit("submitStart", {
+          mode: this.mode,
+          playerName: this.playerName,
+          game: this.game,
+          roomId: this.roomId,
+          passCode: this.passCode,
+        });
+      }
     },
   },
 };
