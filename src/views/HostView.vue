@@ -61,12 +61,7 @@
           mode="out-in"
         >
           <div
-            class="
-              row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4
-              justify-content-center
-              text-center
-              mt-4
-            "
+            class="row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-4"
             v-if="roomStatus == 'REG'"
           >
             <div class="col-auto" v-for="pl in playersOnline" :key="pl.id">
@@ -79,7 +74,7 @@
           </div>
 
           <div v-else-if="roomStatus == 'INPLAY'" class="mt-4">
-            <guesstimate-console></guesstimate-console>
+            <guesstimate-console v-if="game == 'GTM'"></guesstimate-console>
           </div>
           <div v-else></div>
         </transition>
@@ -102,7 +97,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["gameRoom", "gameName"]),
+    ...mapGetters(["gameRoom", "gameName", "game"]),
   },
   created() {
     // For Check RoomNow

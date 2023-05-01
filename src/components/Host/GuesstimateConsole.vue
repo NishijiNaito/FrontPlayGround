@@ -182,12 +182,7 @@
       </div>
     </div>
     <div
-      class="
-        row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4
-        justify-content-center
-        text-center
-        mt-4
-      "
+      class="row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-4"
     >
       <div class="col-auto" v-for="pl in playerData" :key="pl.uuid">
         <div class="card scale-in-hor-center">
@@ -223,8 +218,12 @@
               class="card-body"
               v-else-if="gameData.inGameStage == 2 && pl.lockDown == true"
             >
-              <h1>
+              <h1 v-if="gameData.quiz.questionType == 'E'">
                 {{ gameData.quiz.answerPrefix }} {{ pl.ans }}
+                {{ gameData.quiz.answerSuffix }}
+              </h1>
+              <h1 v-else-if="gameData.quiz.questionType == 'R1'">
+                {{ gameData.quiz.answerPrefix }} {{ pl.min }} - {{ pl.max }}
                 {{ gameData.quiz.answerSuffix }}
               </h1>
             </div>
@@ -327,7 +326,7 @@ export default {
       this.$socket.emit("hostGameUpdate", dat);
     },
     revealCorrect() {
-      let ans = +this.gameData.answer.answer;
+      let ans = +this.gameData.answer.answer; //get answer of question
 
       let pd = JSON.parse(JSON.stringify(this.playerData)); // for Not Same Array
       if (this.gameData.quiz.questionType == "E") {
@@ -357,6 +356,84 @@ export default {
             e.answerStatus = score;
           }
         });
+
+        //put Result
+        this.playerData.forEach((e, i) => {
+          let idx = pd.findIndex((el) => {
+            return el.uuid == e.uuid;
+          });
+          this.playerData[i] = pd[idx];
+        });
+      } else if (this.gameData.quiz.questionType == "R1") {
+        // Answer For Range
+        let cor = 0;
+        let incor = 0;
+
+        pd.forEach((pl) => {
+          if (pl.lockDown) {
+            // is answered
+            if (+pl.min <= ans && +pl.max >= ans) {
+              //correct
+              pl.answerStatus = "correct";
+              pl.size = Math.abs(+pl.min - +pl.max);
+
+              cor++;
+            } else {
+              //incorrect
+              pl.answerStatus = "incorrect";
+              incor++;
+            }
+          }
+        });
+
+        console.log(`Room ${this.gameRoom.roomId} > ${cor} | ${incor}`);
+
+        //find smallest and largest
+        let min = 0;
+        let max = 0;
+        let i = 1;
+        pd.forEach((pl) => {
+          if (pl.lockDown && pl.answerStatus == "correct") {
+            // answer and correct
+            if (i == 1) {
+              // set first
+              min = pl.size;
+              max = pl.size;
+            } else {
+              //set min max
+              if (min > pl.size) {
+                min = pl.size;
+              } else if (max < pl.size) {
+                max = pl.size;
+              }
+            }
+            i++;
+          }
+        });
+
+        //scoring in mode
+
+        pd.forEach((pl) => {
+          if (pl.lockDown && pl.answerStatus == "correct") {
+            // answer and correct
+            if (pl.size == min) {
+              // is the least
+              pl.score += 3;
+              pl.answerStatus = "correct_smallest";
+            } else if (pl.size != max) {
+              // not least but not max
+              pl.score += 1;
+            } else if (incor > 0) {
+              // max but have incor
+              pl.score += 1;
+            } else {
+              // no incor and max
+              pl.answerStatus = "correct_largest";
+            }
+          }
+        });
+
+        //put Result
         this.playerData.forEach((e, i) => {
           let idx = pd.findIndex((el) => {
             return el.uuid == e.uuid;

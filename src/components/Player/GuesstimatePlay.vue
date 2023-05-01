@@ -72,6 +72,47 @@
                         </span>
                       </div>
                     </h2>
+
+                    <h2
+                      class="text-center pre-formatted"
+                      v-else-if="gameData.quiz.questionType == 'R1'"
+                    >
+                      <div class="input-group mb-2">
+                        <span
+                          v-if="gameData.quiz.answerPrefix"
+                          class="input-group-text"
+                        >
+                          {{ gameData.quiz.answerPrefix }}
+                        </span>
+                        <input
+                          type="text"
+                          class="form-control"
+                          pattern="-?\d*\.?\d*"
+                          placeholder="Minimum"
+                          v-model="myPlayerData.min"
+                          autocomplete="off"
+                          inputmode="numeric"
+                          required
+                        />
+                        <span class="input-group-text"> - </span>
+                        <input
+                          type="text"
+                          class="form-control"
+                          pattern="-?\d*\.?\d*"
+                          placeholder="Maximum"
+                          v-model="myPlayerData.max"
+                          autocomplete="off"
+                          inputmode="numeric"
+                          required
+                        />
+                        <span
+                          v-if="gameData.quiz.answerSuffix"
+                          class="input-group-text"
+                        >
+                          {{ gameData.quiz.answerSuffix }}
+                        </span>
+                      </div>
+                    </h2>
                     <button type="submit" class="w-100 btn btn-info mt-1">
                       Submit
                     </button>
@@ -97,7 +138,7 @@
       >
         <div class="page page-center">
           <div class="row align-items-center">
-            <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mx-auto">
               <div class="card">
                 <div class="card-body">
                   <h1 class="text-center pre-formatted">
@@ -117,6 +158,28 @@
                     {{ myPlayerData.ans }}
                     {{ gameData.quiz.answerSuffix }}
                   </h2>
+                </div>
+                <div
+                  class="card-body"
+                  v-if="gameData.quiz.questionType == 'R1'"
+                >
+                  <h2 class="text-center pre-formatted">
+                    Your Answer <br />
+                    {{ gameData.quiz.answerPrefix }}
+                    {{ myPlayerData.min }} - {{ myPlayerData.max }}
+                    {{ gameData.quiz.answerSuffix }}
+                  </h2>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="col-lg-6 col-md-6 col-sm-12"
+              v-if="gameData.quiz.questionPic"
+            >
+              <div class="card">
+                <div class="card-body">
+                  <img style="width: 100%" :src="gameData.quiz.questionPic" />
                 </div>
               </div>
             </div>
@@ -126,7 +189,7 @@
       <div v-else-if="gameData.inGameStage == 2">
         <div class="page page-center">
           <div class="row align-items-center">
-            <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mx-auto">
               <div class="card">
                 <div class="card-body">
                   <h1 class="text-center pre-formatted">
@@ -147,6 +210,28 @@
                     {{ gameData.quiz.answerSuffix }}
                   </h2>
                 </div>
+                <div
+                  class="card-body"
+                  v-if="gameData.quiz.questionType == 'R1'"
+                >
+                  <h2 class="text-center pre-formatted">
+                    Your Answer <br />
+                    {{ gameData.quiz.answerPrefix }}
+                    {{ myPlayerData.min }} - {{ myPlayerData.max }}
+                    {{ gameData.quiz.answerSuffix }}
+                  </h2>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="col-lg-6 col-md-6 col-sm-12"
+              v-if="gameData.quiz.questionPic"
+            >
+              <div class="card">
+                <div class="card-body">
+                  <img style="width: 100%" :src="gameData.quiz.questionPic" />
+                </div>
               </div>
             </div>
           </div>
@@ -155,7 +240,7 @@
       <div v-else-if="gameData.inGameStage == 3">
         <div class="page page-center">
           <div class="row align-items-center">
-            <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mx-auto">
               <div class="card">
                 <div class="card-body">
                   <h1 class="text-center pre-formatted">
@@ -182,6 +267,20 @@
                     {{ gameData.quiz.answerSuffix }}
                   </h2>
                 </div>
+                <div
+                  class="card-body"
+                  v-else-if="
+                    gameData.quiz.questionType == 'R1' &&
+                    myPlayerData.lockDown == true
+                  "
+                >
+                  <h2 class="text-center pre-formatted">
+                    Your Answer <br />
+                    {{ gameData.quiz.answerPrefix }}
+                    {{ myPlayerData.min }} - {{ myPlayerData.max }}
+                    {{ gameData.quiz.answerSuffix }}
+                  </h2>
+                </div>
                 <div class="card-body" v-else>
                   <h2 class="text-center pre-formatted">Your Don't Answer</h2>
                 </div>
@@ -194,9 +293,40 @@
                     {{ gameData.answer.answer }}
                     {{ gameData.quiz.answerSuffix }}
                   </h2>
-                  <h2 class="text-center pre-formatted">
+                  <h2
+                    class="text-center pre-formatted"
+                    v-if="gameData.quiz.questionType == 'E'"
+                  >
                     You Got {{ myPlayerData.answerStatus || 0 }} Points
                   </h2>
+                  <h2
+                    class="text-center pre-formatted"
+                    v-if="gameData.quiz.questionType == 'R1'"
+                  >
+                    <div v-if="myPlayerData.answerStatus == 'correct_smallest'">
+                      You Got 3 Points from smallest size
+                    </div>
+                    <div v-else-if="myPlayerData.answerStatus == 'correct'">
+                      You Got 1 Points
+                    </div>
+                    <div
+                      v-else-if="myPlayerData.answerStatus == 'correct_largest'"
+                    >
+                      You Got 0 Points from largest size
+                    </div>
+                    <div v-else>You Got 0 Points</div>
+                  </h2>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="col-lg-6 col-md-6 col-sm-12"
+              v-if="gameData.quiz.questionPic"
+            >
+              <div class="card">
+                <div class="card-body">
+                  <img style="width: 100%" :src="gameData.quiz.questionPic" />
                 </div>
               </div>
             </div>
