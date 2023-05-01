@@ -187,6 +187,9 @@ export default {
     this.$socket.on("notFound", () => {
       alert("ไม่พบห้องที่ค้นหา");
     });
+    this.$socket.on("wrongPassCode", () => {
+      alert("รหัสเข้าห้องไม่ถูกต้อง");
+    });
     this.$socket.on("roomRunning", () => {
       alert("ห้องกำลังเล่นอยู่");
     });
@@ -209,6 +212,7 @@ export default {
   unmounted() {
     this.$socket.off("startHostComplete");
     this.$socket.off("notFound");
+    this.$socket.off("wrongPassCode");
     this.$socket.off("roomRunning");
     this.$socket.off("startJoinComplete");
   },
