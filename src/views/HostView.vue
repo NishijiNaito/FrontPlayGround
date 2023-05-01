@@ -6,10 +6,12 @@
           <div class="col-md-3">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Room ID</h4>
+                <h4 class="card-title">Room ID | Co-Host PassCode</h4>
               </div>
               <div class="card-body">
-                <h1 class="card-text">{{ gameRoom.roomId }}</h1>
+                <h1 class="card-text">
+                  {{ gameRoom.roomId }} | {{ gameRoom.passCode }}
+                </h1>
               </div>
             </div>
           </div>
