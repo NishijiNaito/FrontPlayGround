@@ -24,7 +24,8 @@ export default {
         switch (state.game) {
             case "GTM":
                 return "Guesstimate";
-
+            case "WDWH":
+                return "ใคร ทำอะไร ที่ไหน อย่างไร";
             default:
                 return "";
         }

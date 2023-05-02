@@ -2,7 +2,10 @@
   <div>
     <div class="row justify-content-center">
       <div class="col-11">
-        <div class="row justify-content-center text-center mt-4">
+        <div
+          class="row justify-content-center text-center mt-4"
+          v-if="roomStatus == 'REG'"
+        >
           <div class="col-md-3">
             <div class="card">
               <div class="card-header">
@@ -70,6 +73,7 @@
               v-if="game == 'GTM'"
               :roomId="roomId"
             ></guesstimate-spec>
+            <WDWHSpec v-if="game == 'WDWH'" :roomId="roomId"></WDWHSpec>
           </div>
           <div v-else></div>
         </transition>
@@ -80,9 +84,10 @@
 
 <script>
 import GuesstimateSpec from "../components/Spectator/GuesstimateSpec.vue";
+import WDWHSpec from "../components/Spectator/WDWHSpec.vue";
 
 export default {
-  components: { GuesstimateSpec },
+  components: { GuesstimateSpec, WDWHSpec },
   props: ["roomId"],
   data() {
     return {
@@ -126,6 +131,8 @@ export default {
       switch (this.game) {
         case "GTM":
           return "Guesstimate";
+        case "WDWH":
+          return "ใคร ทำอะไร ที่ไหน อย่างไร";
 
         default:
           return "";

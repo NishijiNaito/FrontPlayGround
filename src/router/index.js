@@ -5,10 +5,21 @@ import PlayViewVue from '../views/PlayView.vue'
 import DebugView from '../views/DebugView.vue'
 import SpecViewVue from '@/views/SpecView.vue'
 
-const routes = [{
+const routes = [{ path: '', redirect: '/start' }, {
     path: '/start',
-    name: 'start',
-    component: StartView
+    children: [{
+        path: '',
+        name: "start",
+        component: StartView,
+
+    },
+    {
+        path: ':setMode',
+        name: "startset",
+        component: StartView,
+        props: true
+    }
+    ]
 }, {
     path: '/host',
     name: 'host',

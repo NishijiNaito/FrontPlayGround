@@ -31,6 +31,7 @@
       </div>
       <div v-else>
         <guesstimate-play v-if="gameRoom.game == 'GTM'"></guesstimate-play>
+        <WDWHPlay v-else-if="gameRoom.game == 'WDWH'"></WDWHPlay>
       </div>
     </transition>
   </div>
@@ -39,9 +40,10 @@
 <script>
 import { mapGetters } from "vuex";
 import GuesstimatePlay from "../components/Player/GuesstimatePlay.vue";
+import WDWHPlay from "../components/Player/WDWHPlay.vue";
 
 export default {
-  components: { GuesstimatePlay },
+  components: { GuesstimatePlay, WDWHPlay },
 
   data() {
     return {

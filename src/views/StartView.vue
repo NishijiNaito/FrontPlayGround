@@ -139,8 +139,9 @@
                   <span class="input-icon-addon">
                     <i class="fas fa-puzzle-piece"></i>
                   </span>
-                  <select class="form-control" :v-model="game" id="game_mode">
+                  <select class="form-control" v-model="game" id="game_mode">
                     <option value="GTM">Guesstimate</option>
+                    <option value="WDWH">ใคร ทำอะไร ที่ไหน อย่างไร</option>
                   </select>
                 </div>
               </div>
@@ -158,6 +159,7 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
+  props: ["setMode"],
   data() {
     return {
       mode: "player",
@@ -168,6 +170,11 @@ export default {
     };
   },
   mounted() {
+    if (this.setMode == "" || this.setMode == null) {
+      this.mode = "player";
+    } else {
+      this.mode = this.setMode;
+    }
     this.$socket.on("startHostComplete", (data) => {
       console.log(data);
       // alert("Create Complete");

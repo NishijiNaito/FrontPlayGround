@@ -30,11 +30,11 @@
             <div class="col-lg-6 col-md-6 col-sm-12 mx-auto mb-3">
               <div class="card">
                 <div class="card-body">
-                  <h1 class="text-center pre-formatted">
+                  <h1 class="text-center">
                     {{ gameData["quiz"].question }}
                   </h1>
 
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     {{ gameData.quiz.questionExplain }}
                   </h2>
                 </div>
@@ -44,7 +44,7 @@
                 <div class="card-body">
                   <form @submit.prevent="submitAnswer">
                     <h2
-                      class="text-center pre-formatted"
+                      class="text-center"
                       v-if="gameData.quiz.questionType == 'E'"
                     >
                       <div class="input-group mb-2">
@@ -74,7 +74,7 @@
                     </h2>
 
                     <h2
-                      class="text-center pre-formatted"
+                      class="text-center"
                       v-else-if="gameData.quiz.questionType == 'R1'"
                     >
                       <div class="input-group mb-2">
@@ -141,18 +141,18 @@
             <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mx-auto">
               <div class="card">
                 <div class="card-body">
-                  <h1 class="text-center pre-formatted">
+                  <h1 class="text-center">
                     {{ gameData["quiz"].question }}
                   </h1>
 
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     {{ gameData.quiz.questionExplain }}
                   </h2>
                 </div>
               </div>
               <div class="card mt-3">
                 <div class="card-body" v-if="gameData.quiz.questionType == 'E'">
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     Your Answer <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ myPlayerData.ans }}
@@ -163,7 +163,7 @@
                   class="card-body"
                   v-if="gameData.quiz.questionType == 'R1'"
                 >
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     Your Answer <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ myPlayerData.min }} - {{ myPlayerData.max }}
@@ -192,18 +192,18 @@
             <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mx-auto">
               <div class="card">
                 <div class="card-body">
-                  <h1 class="text-center pre-formatted">
+                  <h1 class="text-center">
                     {{ gameData["quiz"].question }}
                   </h1>
 
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     {{ gameData.quiz.questionExplain }}
                   </h2>
                 </div>
               </div>
               <div class="card mt-3">
                 <div class="card-body" v-if="gameData.quiz.questionType == 'E'">
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     Your Answer <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ myPlayerData.ans }}
@@ -214,7 +214,7 @@
                   class="card-body"
                   v-if="gameData.quiz.questionType == 'R1'"
                 >
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     Your Answer <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ myPlayerData.min }} - {{ myPlayerData.max }}
@@ -243,11 +243,11 @@
             <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mx-auto">
               <div class="card">
                 <div class="card-body">
-                  <h1 class="text-center pre-formatted">
+                  <h1 class="text-center">
                     {{ gameData["quiz"].question }}
                   </h1>
 
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     {{ gameData.quiz.questionExplain }}
                   </h2>
                 </div>
@@ -260,7 +260,7 @@
                     myPlayerData.lockDown == true
                   "
                 >
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     Your Answer <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ myPlayerData.ans }}
@@ -274,7 +274,7 @@
                     myPlayerData.lockDown == true
                   "
                 >
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     Your Answer <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ myPlayerData.min }} - {{ myPlayerData.max }}
@@ -282,25 +282,25 @@
                   </h2>
                 </div>
                 <div class="card-body" v-else>
-                  <h2 class="text-center pre-formatted">Your Don't Answer</h2>
+                  <h2 class="text-center">Your Don't Answer</h2>
                 </div>
               </div>
               <div class="card mt-3">
                 <div class="card-body">
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     The Answer is <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ gameData.answer.answer }}
                     {{ gameData.quiz.answerSuffix }}
                   </h2>
                   <h2
-                    class="text-center pre-formatted"
+                    class="text-center"
                     v-if="gameData.quiz.questionType == 'E'"
                   >
                     You Got {{ myPlayerData.answerStatus || 0 }} Points
                   </h2>
                   <h2
-                    class="text-center pre-formatted"
+                    class="text-center"
                     v-if="gameData.quiz.questionType == 'R1'"
                   >
                     <div v-if="myPlayerData.answerStatus == 'correct_smallest'">
@@ -377,6 +377,7 @@ export default {
   },
   methods: {
     submitAnswer() {
+      // get gameRoom Data
       let dat = {
         roomId: this.gameRoom.roomId,
         playerName: this.gameRoom.playerName,
@@ -384,8 +385,9 @@ export default {
         game: this.gameRoom.game,
         uuid: this.gameRoom.uuid,
       };
+      // set myplayerData
       this.myPlayerData.lockDown = true;
-
+      // put myplayerData in dat
       dat.myPlayerData = this.myPlayerData;
       this.$socket.emit("playerGameUpdate", dat);
     },
@@ -403,7 +405,7 @@ export default {
 .page-center {
   justify-content: center !important;
 }
-.pre-formatted {
+.pre-format {
   white-space: pre;
 }
 </style>

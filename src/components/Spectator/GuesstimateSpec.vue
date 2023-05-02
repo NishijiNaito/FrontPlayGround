@@ -10,11 +10,11 @@
           <div class="col-lg-6 col-md-6 col-sm-12 mx-auto mb-3">
             <div class="card">
               <div class="card-body">
-                <h1 class="text-center pre-formatted">
+                <h1 class="text-center">
                   {{ gameData["quiz"].question }}
                 </h1>
 
-                <h2 class="text-center pre-formatted">
+                <h2 class="text-center">
                   {{ gameData.quiz.questionExplain }}
                 </h2>
               </div>
@@ -26,9 +26,9 @@
             >
               <div class="card mt-2" v-if="gameData.inGameStage == 3">
                 <div class="card-body">
-                  <h1 class="text-center pre-formatted">คำตอบ</h1>
+                  <h1 class="text-center">คำตอบ</h1>
 
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     {{ gameData.quiz.answerPrefix }}
                     {{ gameData.answer.answer }}
                     {{ gameData.quiz.answerSuffix }}
@@ -37,9 +37,9 @@
               </div>
               <div class="card mt-2" v-else>
                 <div class="card-body">
-                  <h1 class="text-center pre-formatted">คำตอบ</h1>
+                  <h1 class="text-center">คำตอบ</h1>
 
-                  <h2 class="text-center pre-formatted">
+                  <h2 class="text-center">
                     {{ gameData.quiz.answerPrefix }}
                     ???
                     {{ gameData.quiz.answerSuffix }}
@@ -55,7 +55,12 @@
             <div class="card">
               <div class="card-body">
                 <img
-                  style="max-height: 400px; width: 100%; position: "
+                  style="
+                    display: block;
+                    max-height: 300px;
+                    margin-left: auto;
+                    margin-right: auto;
+                  "
                   :src="gameData.quiz.questionPic"
                 />
               </div>
@@ -68,7 +73,7 @@
           <div class="col-lg-6 col-md-6 col-sm-12 mx-auto mb-3">
             <div class="card">
               <div class="card-body">
-                <h1 class="text-center pre-formatted">กำลังรอคำถาม</h1>
+                <h1 class="text-center">กำลังรอคำถาม</h1>
               </div>
             </div>
           </div>
