@@ -86,6 +86,7 @@
                     class="form-control"
                     v-model="playerName"
                     placeholder="Player Name"
+                    maxlength="15"
                     required
                   />
                 </div>
