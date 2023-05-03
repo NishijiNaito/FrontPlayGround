@@ -182,9 +182,9 @@
       </div>
     </div>
     <div
-      class="row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-4"
+      class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-3 row-gap-3"
     >
-      <div class="col-auto" v-for="pl in playerData" :key="pl.uuid">
+      <div class="col" v-for="pl in playerData" :key="pl.uuid">
         <div class="card scale-in-hor-center">
           <div class="card-header">
             <h1 class="card-text text-center w-100">
@@ -225,6 +225,25 @@
               <h1 v-else-if="gameData.quiz.questionType == 'R1'">
                 {{ gameData.quiz.answerPrefix }} {{ pl.min }} - {{ pl.max }}
                 {{ gameData.quiz.answerSuffix }}
+              </h1>
+            </div>
+            <div
+              class="card-body"
+              v-else-if="gameData.inGameStage == 3 && pl.lockDown == true"
+            >
+              <h1 v-if="gameData.quiz.questionType == 'E'">
+                Diff. = {{ pl.size }} <br />
+                (+ {{ pl.answerStatus }} pts.)
+              </h1>
+              <h1 v-else-if="gameData.quiz.questionType == 'R1'">
+                <div v-if="pl.answerStatus == 'correct_smallest'">
+                  Smallest + 3 pts.
+                </div>
+                <div v-else-if="pl.answerStatus == 'correct'">+ 1 pts.</div>
+                <div v-else-if="pl.answerStatus == 'correct_largest'">
+                  Largest
+                </div>
+                <div v-else>Incorrect</div>
               </h1>
             </div>
             <div v-else></div>
