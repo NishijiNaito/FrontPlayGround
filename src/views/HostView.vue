@@ -78,6 +78,9 @@
           <div v-else-if="roomStatus == 'INPLAY'" class="mt-4">
             <guesstimate-console v-if="game == 'GTM'"></guesstimate-console>
             <WDWHConsole v-if="game == 'WDWH'"></WDWHConsole>
+            <number-from-story-console
+              v-if="game == 'NFS'"
+            ></number-from-story-console>
           </div>
           <div v-else></div>
         </transition>
@@ -90,10 +93,11 @@
 <script>
 import { mapGetters } from "vuex";
 import GuesstimateConsole from "../components/Host/GuesstimateConsole.vue";
+import NumberFromStoryConsole from "../components/Host/NumberFromStoryConsole.vue";
 import WDWHConsole from "../components/Host/WDWHConsole.vue";
 
 export default {
-  components: { GuesstimateConsole, WDWHConsole },
+  components: { GuesstimateConsole, WDWHConsole, NumberFromStoryConsole },
   data() {
     return {
       playersOnline: [],

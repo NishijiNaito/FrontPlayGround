@@ -143,6 +143,7 @@
                   <select class="form-control" v-model="game" id="game_mode">
                     <option value="GTM">Guesstimate</option>
                     <option value="WDWH">ใคร ทำอะไร ที่ไหน อย่างไร</option>
+                    <option value="NFS">เลข จาก เรื่อง</option>
                   </select>
                 </div>
               </div>
