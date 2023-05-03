@@ -82,9 +82,9 @@
     </transition>
 
     <div
-      class="row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-4"
+      class="row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-3 row-gap-3"
     >
-      <div class="col-auto" v-for="pl in playerData" :key="pl.uuid">
+      <div class="col" v-for="pl in playerData" :key="pl.uuid">
         <div class="card scale-in-hor-center">
           <div class="card-header">
             <h1 class="card-text text-center w-100">

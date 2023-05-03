@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
       <div class="col-11">
         <div
-          class="row justify-content-center text-center mt-4"
+          class="row justify-content-center text-center mt-4 row-gap-3"
           v-if="roomStatus == 'REG'"
         >
           <div class="col-md-3">
@@ -47,9 +47,9 @@
         >
           <div v-if="roomStatus == 'REG'">
             <div
-              class="row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-4"
+              class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-3 row-gap-3"
             >
-              <div class="col-auto" v-for="pl in playersOnline" :key="pl.id">
+              <div class="col" v-for="pl in playersOnline" :key="pl.id">
                 <div class="card scale-in-hor-center">
                   <div class="card-body">
                     <h1 class="card-text">{{ pl.playerName }}</h1>
