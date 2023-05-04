@@ -132,8 +132,8 @@
 
       <div v-else-if="gameData.phase == 3 && myPlayerData.is_ready == false">
         <div class="page page-center">
-          <div class="row align-items-center">
-            <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
+          <div class="row justify-content-center align-items-center row-gap-2">
+            <div class="col-lg-8 col-md-8 col-sm-12 h-100">
               <div class="card">
                 <div class="card-body">
                   <h1 class="text-center">
@@ -145,12 +145,9 @@
 
               <div class="card mt-2">
                 <div class="card-body">
-                  <h2 class="mb-3 text-center">PHASE 4 แต่งเรื่อง</h2>
+                  <h2 class="mb-3 text-center">PHASE 3 แต่งเรื่อง</h2>
                   <h3 class="text-center mb-3">
                     หมวดหมู่ที่ได้ [ {{ gameData.category }} ]
-                  </h3>
-                  <h3 class="text-center mb-2">
-                    ตัวเลขที่ได้ {{ myPlayerData.level }}
                   </h3>
 
                   <div v-if="gameData.writing">
@@ -196,6 +193,15 @@
                   </div>
 
                   <!-- <div>{{ gameRoom }}</div> -->
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-8 col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="text-center" style="font-size: 5rem">
+                    {{ myPlayerData.level }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -258,7 +264,17 @@
                   <!-- <div>{{ gameRoom }}</div> -->
                 </div>
               </div>
-              <div class="card mt-2">
+              <div
+                class="card mt-2"
+                :class="{
+                  'bg-success':
+                    gameRoom.uuid == gameData.player_present_now &&
+                    !gameData.writing,
+                  'text-white':
+                    gameRoom.uuid == gameData.player_present_now &&
+                    !gameData.writing,
+                }"
+              >
                 <div class="card-body" v-if="gameData.writing">
                   <div
                     class="text-center story"
@@ -339,6 +355,9 @@
                   <h3 class="text-center">
                     โปรดเลือกคนที่มีเลขมากสุด และ น้อยสุด
                   </h3>
+                  <h3 class="text-center">
+                    เลขของคุณ : {{ myPlayerData.level }}
+                  </h3>
 
                   <!-- <div>{{ gameRoom }}</div> -->
                 </div>
@@ -346,77 +365,101 @@
               <div class="card mt-2">
                 <div class="card-body">
                   <!-- <div>{{ gameRoom }}</div> -->
-
-                  <button
-                    @click="readyAnswer"
-                    v-if="answeringTime == false"
-                    class="w-100 btn btn-success"
+                  <transition
+                    enter-active-class="scale-in-hor-center"
+                    leave-active-class="scale-out-hor-center"
+                    mode="out-in"
                   >
-                    พร้อมตอบคำถาม
-                  </button>
-                  <div v-if="answeringTime">
-                    <div class="row">
+                    <button
+                      @click="readyAnswer"
+                      v-if="answeringTime == false"
+                      class="w-100 btn btn-success"
+                    >
+                      พร้อมตอบคำถาม
+                    </button>
+                    <div v-else>
                       <div
-                        class="col-auto"
-                        @click="playerSelect = pl"
-                        v-for="pl in answeringPlayerCanUse"
-                        :key="pl"
+                        class="row justify-content-center row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-gap-2"
                       >
                         <div
-                          class="card"
-                          :class="{ 'card-active': pl == playerSelect }"
+                          class="col"
+                          @click="playerSelect = pl"
+                          v-for="pl in answeringPlayerCanUse"
+                          :key="pl"
                         >
-                          <div class="card-body">
-                            {{
-                              playerData.find((e) => e.uuid == pl).playerName
-                            }}
+                          <div
+                            class="card"
+                            :class="{ 'card-active': pl == playerSelect }"
+                            style="cursor: pointer"
+                          >
+                            <div
+                              class="card-body text-center"
+                              style="font-size: 19px"
+                            >
+                              {{
+                                playerData.find((e) => e.uuid == pl).playerName
+                              }}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <hr />
+                      <hr />
 
-                    <div class="row">
-                      <div class="col-6" @click="answerSelect = 'M'">
-                        <div
-                          class="card"
-                          :class="{ 'card-active': answerSelect == 'M' }"
-                        >
-                          <div class="card-body">
-                            มากที่สุด >
-                            {{
-                              myPlayerData.send_answer.mostPlayer == null
-                                ? "ยังไม่กำหนด"
-                                : playerData.find(
-                                    (e) =>
-                                      e.uuid ==
-                                      myPlayerData.send_answer.mostPlayer
-                                  ).playerName
-                            }}
+                      <div
+                        class="row row-cols-1 row-cols-sm-2 row-gap-2"
+                        style="font-size: 19px"
+                      >
+                        <div class="col" @click="answerSelect = 'M'">
+                          <div
+                            class="card"
+                            :class="{
+                              'card-active': answerSelect == 'M',
+                              'border-success':
+                                myPlayerData.send_answer.mostPlayer != null,
+                            }"
+                            style="cursor: pointer"
+                          >
+                            <div class="card-body">
+                              มากที่สุด >
+                              {{
+                                myPlayerData.send_answer.mostPlayer == null
+                                  ? "ยังไม่กำหนด"
+                                  : playerData.find(
+                                      (e) =>
+                                        e.uuid ==
+                                        myPlayerData.send_answer.mostPlayer
+                                    ).playerName
+                              }}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div class="col-6" @click="answerSelect = 'L'">
-                        <div
-                          class="card"
-                          :class="{ 'card-active': answerSelect == 'L' }"
-                        >
-                          <div class="card-body">
-                            น้อยที่สุด >
-                            {{
-                              myPlayerData.send_answer.leastPlayer == null
-                                ? "ยังไม่กำหนด"
-                                : playerData.find(
-                                    (e) =>
-                                      e.uuid ==
-                                      myPlayerData.send_answer.leastPlayer
-                                  ).playerName
-                            }}
+                        <div class="col" @click="answerSelect = 'L'">
+                          <div
+                            class="card"
+                            :class="{
+                              'card-active': answerSelect == 'L',
+                              'border-success':
+                                myPlayerData.send_answer.leastPlayer != null,
+                            }"
+                            style="cursor: pointer"
+                          >
+                            <div class="card-body">
+                              น้อยที่สุด >
+                              {{
+                                myPlayerData.send_answer.leastPlayer == null
+                                  ? "ยังไม่กำหนด"
+                                  : playerData.find(
+                                      (e) =>
+                                        e.uuid ==
+                                        myPlayerData.send_answer.leastPlayer
+                                    ).playerName
+                              }}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </transition>
 
                   <button
                     type="button"
@@ -426,7 +469,7 @@
                       myPlayerData.send_answer.leastPlayer != null &&
                       answeringTime
                     "
-                    class="w-100 btn btn-info mt-1"
+                    class="w-100 btn btn-info mt-3"
                   >
                     กดเมื่อตอบเรียบร้อย
                   </button>
@@ -458,10 +501,10 @@
 
               <div class="card mt-2">
                 <div class="card-body">
-                  <h2 class="text-center">PHASE 6 ตอบคำถาม</h2>
+                  <h2 class="text-center">PHASE 5 ตอบคำถาม</h2>
                   <h3 class="text-center">ตอบคำถามเรียบร้อย</h3>
-                  <div class="row">
-                    <div class="col-6">
+                  <div class="row row-gap-3" style="font-size: 19px">
+                    <div class="col-12 col-md-6">
                       <div class="card">
                         <div class="card-body">
                           มากที่สุด >
@@ -477,7 +520,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                       <div class="card">
                         <div class="card-body">
                           น้อยที่สุด >
@@ -505,7 +548,7 @@
       <div v-else-if="gameData.phase == 6">
         <div class="page page-center">
           <div class="row align-items-center">
-            <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
+            <div class="col-lg-10 col-md-10 col-sm-12 mx-auto">
               <div class="card">
                 <div class="card-body">
                   <h1 class="text-center">
@@ -517,9 +560,10 @@
 
               <div class="card mt-2">
                 <div class="card-body">
-                  <h2 class="text-center">PHASE 6 แสดงคำตอบ</h2>
-                  <div class="row mb-2" style="font-size: 18px">
-                    <div class="col-6">
+                  <h2 class="text-center mb-2">PHASE 6 แสดงคำตอบ</h2>
+                  <h2 class="text-center mb-3">คำตอบของคุณ</h2>
+                  <div class="row mb-2 row-gap-2" style="font-size: 18px">
+                    <div class="col-12 col-md-6">
                       <div class="card">
                         <div class="card-body">
                           มากที่สุด >
@@ -535,7 +579,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                       <div class="card">
                         <div class="card-body">
                           น้อยที่สุด >
@@ -552,16 +596,16 @@
                       </div>
                     </div>
                   </div>
-
+                  <hr class="mb-2 mt-2" />
+                  <h2 class="text-center mb-3">ผู้เล่นคนอื่นๆ</h2>
                   <div
-                    class="row mb-2"
-                    v-for="pl in dataExeptMe"
-                    :key="pl.uuid"
+                    class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-2 justify-content-center"
                   >
-                    <div class="col-12">
+                    <div class="col" v-for="pl in dataExeptMe" :key="pl.uuid">
                       <div class="card">
                         <div class="card-body fo-text">
-                          {{ pl.playerName }} > > > มากที่สุด :
+                          {{ pl.playerName }} <br />
+                          มากสุด :
                           {{
                             pl.send_answer.mostPlayer == null
                               ? "ยังไม่กำหนด"
@@ -569,7 +613,8 @@
                                   (e) => e.uuid == pl.send_answer.mostPlayer
                                 ).playerName
                           }}
-                          | น้อยที่สุด :
+                          <br />
+                          น้อยสุด :
                           {{
                             pl.send_answer.leastPlayer == null
                               ? "ยังไม่กำหนด"
@@ -651,12 +696,10 @@
                   </h2>
                   <hr class="mb-2 mt-2" />
                   <h2 class="text-center mb-3">เลขของแต่ละคน</h2>
-                  <div class="row mb-2">
-                    <div
-                      class="col-12 col-md-6"
-                      v-for="pl in playerData"
-                      :key="pl.uuid"
-                    >
+                  <div
+                    class="row justify-content-center row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-gap-2 mb-2"
+                  >
+                    <div class="col" v-for="pl in playerData" :key="pl.uuid">
                       <div class="card">
                         <div class="card-body fo-text">
                           {{ pl.playerName }} | {{ pl.level }}

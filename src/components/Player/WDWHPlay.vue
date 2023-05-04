@@ -391,9 +391,11 @@
                     พร้อมจัดอันดับ
                   </button>
                   <div v-if="rankingTime">
-                    <div class="row">
+                    <div
+                      class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-gap-2 justify-content-center"
+                    >
                       <div
-                        class="col-auto"
+                        class="col"
                         @click="playerSelect = pl"
                         v-for="pl in rankingPlayerCanUse"
                         :key="pl"
@@ -412,16 +414,21 @@
                     </div>
                     <hr />
 
-                    <div class="row">
+                    <div
+                      class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-gap-2 justify-content-center"
+                    >
                       <div
-                        class="col-6"
+                        class="col"
                         @click="scoreSeclect = sc.score"
                         v-for="sc in send_score"
                         :key="sc.score"
                       >
                         <div
                           class="card"
-                          :class="{ 'card-active': sc.score == scoreSeclect }"
+                          :class="{
+                            'card-active': sc.score == scoreSeclect,
+                            'border-success': sc.player != null,
+                          }"
                         >
                           <div class="card-body">
                             {{ sc.score }} คะแนน >
@@ -473,7 +480,27 @@
                 <div class="card-body">
                   <h2 class="text-center">PHASE 6 จัดอันดับ</h2>
                   <h3 class="text-center">จัดอันดับเรียบร้อย</h3>
-
+                  <div
+                    class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-2"
+                  >
+                    <div
+                      class="col"
+                      v-for="sc in myPlayerData.send_score"
+                      :key="sc.score"
+                    >
+                      <div class="card">
+                        <div class="card-body">
+                          {{ sc.score }} คะแนน >
+                          {{
+                            sc.player == null
+                              ? "ยังไม่กำหนด"
+                              : playerData.find((e) => e.uuid == sc.player)
+                                  .playerName
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <!-- <div>{{ gameRoom }}</div> -->
                 </div>
               </div>

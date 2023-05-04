@@ -202,24 +202,54 @@
                 </div>
               </div>
               <div class="card mt-3">
-                <div class="card-body" v-if="gameData.quiz.questionType == 'E'">
-                  <h2 class="text-center">
-                    Your Answer <br />
+                <div class="card-body">
+                  <h2
+                    class="text-center"
+                    v-if="gameData.quiz.questionType == 'E'"
+                  >
+                    คำตอบของคุณ <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ myPlayerData.ans }}
                     {{ gameData.quiz.answerSuffix }}
                   </h2>
-                </div>
-                <div
-                  class="card-body"
-                  v-if="gameData.quiz.questionType == 'R1'"
-                >
-                  <h2 class="text-center">
-                    Your Answer <br />
+                  <h2
+                    class="text-center"
+                    v-if="gameData.quiz.questionType == 'R1'"
+                  >
+                    คำตอบของคุณ <br />
                     {{ gameData.quiz.answerPrefix }}
                     {{ myPlayerData.min }} - {{ myPlayerData.max }}
                     {{ gameData.quiz.answerSuffix }}
                   </h2>
+
+                  <h2 class="text-center mb-3">ผู้เล่นคนอื่นๆ</h2>
+                  <div
+                    class="row row-cols-1 row-cols-md-2 row-cols-lg-2 row-gap-2 justify-content-center"
+                  >
+                    <div class="col" v-for="pl in dataExeptMe" :key="pl.uuid">
+                      <div class="card">
+                        <div class="card-body fo-text">
+                          {{ pl.playerName }} <br />
+                          <div
+                            class="text-center"
+                            v-if="gameData.quiz.questionType == 'E'"
+                          >
+                            {{ gameData.quiz.answerPrefix }}
+                            {{ pl.ans }}
+                            {{ gameData.quiz.answerSuffix }}
+                          </div>
+                          <div
+                            class="text-center"
+                            v-if="gameData.quiz.questionType == 'R1'"
+                          >
+                            {{ gameData.quiz.answerPrefix }}
+                            {{ pl.min }} - {{ pl.max }}
+                            {{ gameData.quiz.answerSuffix }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -350,6 +380,9 @@ export default {
   },
   computed: {
     ...mapGetters(["gameRoom", "gameName"]),
+    dataExeptMe() {
+      return this.playerData.filter((e) => e.uuid != this.gameRoom.uuid);
+    },
   },
   created() {
     // alert("New Gamme");

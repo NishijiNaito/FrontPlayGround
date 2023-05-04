@@ -120,61 +120,61 @@
             mode="out-in"
           >
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-if="gameData.phase == 1 && pl.is_ready == false"
             >
               <h1>กำลังพิมพ์</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-success"
               v-else-if="gameData.phase == 1 && pl.is_ready == true"
             >
               <h1>เรียบร้อย</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-else-if="gameData.phase == 2 && pl.is_ready == false"
             >
               <h1>กำลังดูคำ</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-success"
               v-else-if="gameData.phase == 2 && pl.is_ready == true"
             >
               <h1>เรียบร้อย</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-else-if="gameData.phase == 3 && pl.is_ready == false"
             >
               <h1>กำลังดูหมวดหมู่</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-success"
               v-else-if="gameData.phase == 3 && pl.is_ready == true"
             >
               <h1>เรียบร้อย</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-else-if="gameData.phase == 4 && pl.is_ready == false"
             >
               <h1>กำลังแต่งเรื่องเล่า</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-success"
               v-else-if="gameData.phase == 4 && pl.is_ready == true"
             >
               <h1>แต่งเรียบร้อย</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-else-if="gameData.phase == 6 && pl.is_ready == false"
             >
               <h1>กำลังจัดอันดับ</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-success"
               v-else-if="gameData.phase == 6 && pl.is_ready == true"
             >
               <h1>จัดอันดับเรียบร้อย</h1>

@@ -97,19 +97,19 @@
             mode="out-in"
           >
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-if="gameData.inGameStage == 1 && pl.lockDown == false"
             >
               <h1>Not Answer</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-success"
               v-else-if="gameData.inGameStage == 1 && pl.lockDown == true"
             >
               <h1>Answered</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-else-if="gameData.inGameStage == 2 && pl.lockDown == false"
             >
               <h1>Not Answer</h1>
