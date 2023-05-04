@@ -185,11 +185,17 @@
       class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-3 row-gap-3"
     >
       <div class="col" v-for="pl in playerData" :key="pl.uuid">
-        <div class="card scale-in-hor-center">
-          <div class="card-header">
+        <div class="card scale-in-hor-center h-100">
+          <div class="card-header h-100">
+            <button class="btn btn-danger" @click="arscore(pl.uuid, -1)">
+              <i class="fas fa-minus"></i>
+            </button>
             <h1 class="card-text text-center w-100">
               {{ pl.playerName }} ({{ pl.score }})
             </h1>
+            <button class="btn btn-success" @click="arscore(pl.uuid, 1)">
+              <i class="fas fa-plus"></i>
+            </button>
           </div>
           <transition
             enter-active-class="scale-in-hor-center"
@@ -197,19 +203,19 @@
             mode="out-in"
           >
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-if="gameData.inGameStage == 1 && pl.lockDown == false"
             >
               <h1>Not Answer</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-success"
               v-else-if="gameData.inGameStage == 1 && pl.lockDown == true"
             >
               <h1>Answered</h1>
             </div>
             <div
-              class="card-body"
+              class="card-body text-danger"
               v-else-if="gameData.inGameStage == 2 && pl.lockDown == false"
             >
               <h1>Not Answer</h1>
@@ -497,6 +503,25 @@ export default {
         this.gameData.quiz.questionPic = e.target.result;
       };
       reader.readAsDataURL(fileObj);
+    },
+    arscore(uuid, score) {
+      let idx = this.playerData.findIndex((e) => e.uuid == uuid);
+      this.playerData[idx].score += score;
+
+      let dat = {
+        roomId: this.gameRoom.roomId,
+        passCode: this.gameRoom.passCode,
+        mode: this.gameRoom.mode,
+        game: this.gameRoom.game,
+        uuid: this.gameRoom.uuid,
+      };
+      dat.gameData = this.gameData;
+      dat.playerData = this.playerData.map((e) => {
+        let d = e;
+        return d;
+      });
+      // console.log(dat);
+      this.$socket.emit("hostGameUpdate", dat);
     },
   },
 };
