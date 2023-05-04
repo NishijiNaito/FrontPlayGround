@@ -3,10 +3,10 @@
     <div class="row justify-content-center">
       <div class="col-11">
         <div
-          class="row justify-content-center text-center mt-4 row-gap-3"
+          class="row justify-content-center text-center row-gap-3 mt-4"
           v-if="roomStatus == 'REG'"
         >
-          <div class="col-md-3">
+          <div class="col-12 col-sm-6 col-xl-3 order-first">
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Room ID</h4>
@@ -18,7 +18,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-sm-12 col-xl-6 order-last order-xl-2">
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Room Game</h4>
@@ -28,7 +28,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-12 col-sm-6 col-xl-3 order-2 order-xl-last">
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Players</h4>
@@ -47,7 +47,7 @@
         >
           <div v-if="roomStatus == 'REG'">
             <div
-              class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-3 row-gap-3"
+              class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-3 row-gap-3"
             >
               <div class="col" v-for="pl in playersOnline" :key="pl.id">
                 <div class="card scale-in-hor-center">

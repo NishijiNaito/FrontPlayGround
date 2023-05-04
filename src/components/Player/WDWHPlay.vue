@@ -38,7 +38,6 @@
                           placeholder="ใคร"
                           v-model="myPlayerData.q_who"
                           autocomplete="off"
-                          inputmode="numeric"
                           required
                         />
                       </div>

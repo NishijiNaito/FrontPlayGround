@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
       <div class="col-11">
         <div class="row justify-content-center text-center row-gap-3 mt-4">
-          <div class="col-md-3">
+          <div class="col-12 col-sm-6 col-xl-3 order-first">
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Room ID | Co-Host PassCode</h4>
@@ -15,7 +15,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-sm-12 col-xl-6 order-last order-xl-2">
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Room Game</h4>
@@ -25,7 +25,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-12 col-sm-6 col-xl-3 order-2 order-xl-last">
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Players</h4>
@@ -36,6 +36,21 @@
             </div>
           </div>
         </div>
+        <button
+          class="w-100 btn btn-danger mt-3"
+          @click="roomLeave"
+          v-if="roomStatus == 'REG'"
+        >
+          Leave Room
+        </button>
+
+        <button
+          class="w-100 btn btn-danger mt-3"
+          @click="roomDestroy"
+          v-if="roomStatus == 'REG'"
+        >
+          Destroy Room
+        </button>
         <transition
           enter-active-class="scale-in-hor-center"
           leave-active-class="scale-out-hor-center"
@@ -43,7 +58,7 @@
         >
           <button
             class="w-100 btn btn-success mt-3"
-            v-if="roomStatus == 'REG' && playersOnline.length > 0"
+            v-if="roomStatus == 'REG' && playersOnline.length > 1"
             @click="roomStart"
           >
             Start Game
@@ -63,7 +78,7 @@
           mode="out-in"
         >
           <div
-            class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-3 row-gap-3"
+            class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 justify-content-center text-center mt-3 row-gap-3"
             v-if="roomStatus == 'REG'"
           >
             <div class="col" v-for="pl in playersOnline" :key="pl.id">
@@ -159,6 +174,12 @@ export default {
     },
     roomEnd() {
       this.$socket.emit("roomEnd", this.gameRoom);
+    },
+    roomLeave() {
+      this.$socket.emit("hostLeave", this.gameRoom);
+    },
+    roomDestroy() {
+      this.$socket.emit("hostDestroy", this.gameRoom);
     },
   },
 };
