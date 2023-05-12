@@ -96,6 +96,7 @@
             <number-from-story-console
               v-if="game == 'NFS'"
             ></number-from-story-console>
+            <keep-the-chip-console v-if="game == 'KTC'"></keep-the-chip-console>
           </div>
           <div v-else></div>
         </transition>
@@ -108,11 +109,17 @@
 <script>
 import { mapGetters } from "vuex";
 import GuesstimateConsole from "../components/Host/GuesstimateConsole.vue";
+import KeepTheChipConsole from "../components/Host/KeepTheChipConsole.vue";
 import NumberFromStoryConsole from "../components/Host/NumberFromStoryConsole.vue";
 import WDWHConsole from "../components/Host/WDWHConsole.vue";
 
 export default {
-  components: { GuesstimateConsole, WDWHConsole, NumberFromStoryConsole },
+  components: {
+    GuesstimateConsole,
+    WDWHConsole,
+    NumberFromStoryConsole,
+    KeepTheChipConsole,
+  },
   data() {
     return {
       playersOnline: [],

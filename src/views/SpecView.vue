@@ -78,6 +78,10 @@
               v-if="game == 'NFS'"
               :roomId="roomId"
             ></number-from-story-spec>
+            <keep-the-chip-spec
+              v-if="game == 'KTC'"
+              :roomId="roomId"
+            ></keep-the-chip-spec>
           </div>
           <div v-else></div>
         </transition>
@@ -88,11 +92,17 @@
 
 <script>
 import GuesstimateSpec from "../components/Spectator/GuesstimateSpec.vue";
+import KeepTheChipSpec from "../components/Spectator/KeepTheChipSpec.vue";
 import NumberFromStorySpec from "../components/Spectator/NumberFromStorySpec.vue";
 import WDWHSpec from "../components/Spectator/WDWHSpec.vue";
 
 export default {
-  components: { GuesstimateSpec, WDWHSpec, NumberFromStorySpec },
+  components: {
+    GuesstimateSpec,
+    WDWHSpec,
+    NumberFromStorySpec,
+    KeepTheChipSpec,
+  },
   props: ["roomId"],
   data() {
     return {
@@ -140,6 +150,8 @@ export default {
           return "ใคร ทำอะไร ที่ไหน อย่างไร";
         case "NFS":
           return "เลข จาก เรื่อง";
+        case "KTC":
+          return "MCQ Keep The Chip";
         default:
           return "";
       }

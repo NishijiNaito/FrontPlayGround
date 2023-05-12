@@ -140,10 +140,20 @@
                   <span class="input-icon-addon">
                     <i class="fas fa-puzzle-piece"></i>
                   </span>
-                  <select class="form-control" v-model="game" id="game_mode">
+                  <select
+                    class="form-control"
+                    v-model="game"
+                    id="game_mode"
+                    required
+                  >
+                    <option hidden value="">Please Choose</option>
                     <option value="GTM">Guesstimate</option>
                     <option value="WDWH">ใคร ทำอะไร ที่ไหน อย่างไร</option>
                     <option value="NFS">เลข จาก เรื่อง</option>
+                    <option value="KTC">MCQ Keep The Chip</option>
+                    <option disabled value="MCQCASC">
+                      MCQ Casino Confident [ยังไม่เปิด]
+                    </option>
                   </select>
                 </div>
               </div>
@@ -166,7 +176,7 @@ export default {
     return {
       mode: "player",
       playerName: "",
-      game: "GTM",
+      game: "",
       roomId: "",
       passCode: "",
     };

@@ -35,6 +35,9 @@
         <number-from-story-play
           v-else-if="gameRoom.game == 'NFS'"
         ></number-from-story-play>
+        <keep-the-chip-play
+          v-else-if="gameRoom.game == 'KTC'"
+        ></keep-the-chip-play>
       </div>
     </transition>
   </div>
@@ -43,11 +46,17 @@
 <script>
 import { mapGetters } from "vuex";
 import GuesstimatePlay from "../components/Player/GuesstimatePlay.vue";
+import KeepTheChipPlay from "../components/Player/KeepTheChipPlay.vue";
 import NumberFromStoryPlay from "../components/Player/NumberFromStoryPlay.vue";
 import WDWHPlay from "../components/Player/WDWHPlay.vue";
 
 export default {
-  components: { GuesstimatePlay, WDWHPlay, NumberFromStoryPlay },
+  components: {
+    GuesstimatePlay,
+    WDWHPlay,
+    NumberFromStoryPlay,
+    KeepTheChipPlay,
+  },
 
   data() {
     return {

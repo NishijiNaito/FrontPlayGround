@@ -28,6 +28,8 @@ export default {
                 return "ใคร ทำอะไร ที่ไหน อย่างไร";
             case "NFS":
                 return "เลข จาก เรื่อง";
+            case "KTC":
+                return "MCQ Keep The Chip";
             default:
                 return "";
         }
