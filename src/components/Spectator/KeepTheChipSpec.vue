@@ -255,27 +255,27 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 div[class*="choice-"] > div {
   color: white;
   font-size: 1.25em;
 }
 .choice-1 {
-  background-color: #6c6874;
+  background-color: #6c6874 !important;
 }
 .choice-2 {
-  background-color: #7fb5b5;
+  background-color: #7fb5b5 !important;
 }
 .choice-3 {
-  background-color: #a98307;
+  background-color: #a98307 !important;
 }
 .choice-4 {
-  background-color: #287233;
+  background-color: #287233 !important;
 }
 .choice-5 {
-  background-color: #763c28;
+  background-color: #763c28 !important;
 }
 .choice-6 {
-  background-color: #d84b20;
+  background-color: #d84b20 !important;
 }
 </style>
