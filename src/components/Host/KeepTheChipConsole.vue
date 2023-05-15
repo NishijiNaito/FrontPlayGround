@@ -577,6 +577,9 @@ export default {
       this.gameData.quiz.quiz_question = quiz.quiz_question;
       this.answerData.answer = quiz.quiz_answer;
 
+      if (quiz.quiz_picLink)
+        this.gameData.quiz.quiz_picLink = quiz.quiz_picLink;
+
       this.gameData.quiz.quiz_choice = [];
 
       let i = 1;
