@@ -84,7 +84,36 @@
               </div>
             </div>
 
-            <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div
+                    class="row row-cols-1 row-cols-lg-2 justify-content-center row-gap-3"
+                  >
+                    <div
+                      class="col"
+                      v-for="(q, idx) in gameData.quiz.quiz_choice"
+                      :key="idx"
+                      @click="selectChoice = idx"
+                    >
+                      <div
+                        class="card"
+                        :class="{ 'card-active': idx == selectChoice }"
+                        style="cursor: pointer"
+                      >
+                        <div class="card-body text-center">{{ q }}</div>
+                        <div class="card-footer h-100">
+                          <h1 class="card-text text-center inline w-100">
+                            {{ myPlayerData.chip_choice[idx] }}
+                          </h1>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="sticky">
               <div class="card">
                 <div class="card-body">
                   <h1 class="card-text text-center inline w-100">
@@ -164,34 +193,6 @@
                       >
                         All In
                       </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card mt-3">
-                <div class="card-body">
-                  <div
-                    class="row row-cols-1 row-cols-lg-2 justify-content-center row-gap-3"
-                  >
-                    <div
-                      class="col"
-                      v-for="(q, idx) in gameData.quiz.quiz_choice"
-                      :key="idx"
-                      @click="selectChoice = idx"
-                    >
-                      <div
-                        class="card"
-                        :class="{ 'card-active': idx == selectChoice }"
-                        style="cursor: pointer"
-                      >
-                        <div class="card-body text-center">{{ q }}</div>
-                        <div class="card-footer h-100">
-                          <h1 class="card-text text-center inline w-100">
-                            {{ myPlayerData.chip_choice[idx] }}
-                          </h1>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -427,12 +428,11 @@ export default {
 </script>
 
 <style>
-.footer {
-  position: fixed;
-  left: 0;
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
   bottom: 0;
-  width: 100%;
-  color: white;
-  text-align: center;
+  /*height: 30px;*/
+  width: 100vw;
 }
 </style>
