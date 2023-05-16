@@ -356,7 +356,10 @@ export default {
   mounted() {
     //GET GAME INFO UPDATE
     this.$socket.on("playerGameInfo", (data) => {
-      if (data.gameData) this.gameData = data.gameData;
+      if (data.gameData) {
+        this.gameData = data.gameData;
+        if (data.gameData.phase == 4) this.selectChoice = null
+      } 
       if (data.timerData) this.timerData = data.timerData;
       if (data.playerData) {
         this.playerData = data.playerData; // get all playerdata
@@ -365,7 +368,7 @@ export default {
         });
         this.myPlayerData = data.playerData[idx];
       }
-      if (data.gameData.phase == 4) this.selectChoice = null;
+      
     });
     this.$socket.on("connect", () => {
       this.$router.go(0);
