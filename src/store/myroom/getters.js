@@ -30,8 +30,26 @@ export default {
                 return "เลข จาก เรื่อง";
             case "KTC":
                 return "MCQ Keep The Chip";
+            case "CC":
+                return "Casino Confident";
             default:
                 return "";
+        }
+    },
+    gameRequired(state) {
+        switch (state.game) {
+            case "GTM":
+                return 2;
+            case "WDWH":
+                return 2;
+            case "NFS":
+                return 2;
+            case "KTC":
+                return 1;
+            case "CC":
+                return 1;
+            default:
+                return 999;
         }
     }
 

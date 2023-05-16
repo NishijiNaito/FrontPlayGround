@@ -38,6 +38,9 @@
         <keep-the-chip-play
           v-else-if="gameRoom.game == 'KTC'"
         ></keep-the-chip-play>
+        <casino-confident-play
+          v-else-if="gameRoom.game == 'CC'"
+        ></casino-confident-play>
       </div>
     </transition>
   </div>
@@ -45,6 +48,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import CasinoConfidentPlay from "../components/Player/CasinoConfidentPlay.vue";
 import GuesstimatePlay from "../components/Player/GuesstimatePlay.vue";
 import KeepTheChipPlay from "../components/Player/KeepTheChipPlay.vue";
 import NumberFromStoryPlay from "../components/Player/NumberFromStoryPlay.vue";
@@ -56,6 +60,7 @@ export default {
     WDWHPlay,
     NumberFromStoryPlay,
     KeepTheChipPlay,
+    CasinoConfidentPlay,
   },
 
   data() {

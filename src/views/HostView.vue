@@ -58,7 +58,7 @@
         >
           <button
             class="w-100 btn btn-success mt-3"
-            v-if="roomStatus == 'REG' && playersOnline.length > 1"
+            v-if="roomStatus == 'REG' && playersOnline.length >= gameRequired"
             @click="roomStart"
           >
             Start Game
@@ -97,6 +97,9 @@
               v-if="game == 'NFS'"
             ></number-from-story-console>
             <keep-the-chip-console v-if="game == 'KTC'"></keep-the-chip-console>
+            <casino-confident-console
+              v-if="game == 'CC'"
+            ></casino-confident-console>
           </div>
           <div v-else></div>
         </transition>
@@ -108,6 +111,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import CasinoConfidentConsole from "../components/Host/CasinoConfidentConsole.vue";
 import GuesstimateConsole from "../components/Host/GuesstimateConsole.vue";
 import KeepTheChipConsole from "../components/Host/KeepTheChipConsole.vue";
 import NumberFromStoryConsole from "../components/Host/NumberFromStoryConsole.vue";
@@ -119,6 +123,7 @@ export default {
     WDWHConsole,
     NumberFromStoryConsole,
     KeepTheChipConsole,
+    CasinoConfidentConsole,
   },
   data() {
     return {
@@ -127,7 +132,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["gameRoom", "gameName", "game"]),
+    ...mapGetters(["gameRoom", "gameName", "game", "gameRequired"]),
   },
   created() {
     // For Check RoomNow

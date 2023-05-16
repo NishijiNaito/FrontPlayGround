@@ -82,6 +82,10 @@
               v-if="game == 'KTC'"
               :roomId="roomId"
             ></keep-the-chip-spec>
+            <casino-confident-spec
+              v-if="game == 'CC'"
+              :roomId="roomId"
+            ></casino-confident-spec>
           </div>
           <div v-else></div>
         </transition>
@@ -91,6 +95,7 @@
 </template>
 
 <script>
+import CasinoConfidentSpec from "../components/Spectator/CasinoConfidentSpec.vue";
 import GuesstimateSpec from "../components/Spectator/GuesstimateSpec.vue";
 import KeepTheChipSpec from "../components/Spectator/KeepTheChipSpec.vue";
 import NumberFromStorySpec from "../components/Spectator/NumberFromStorySpec.vue";
@@ -102,6 +107,7 @@ export default {
     WDWHSpec,
     NumberFromStorySpec,
     KeepTheChipSpec,
+    CasinoConfidentSpec,
   },
   props: ["roomId"],
   data() {
@@ -152,6 +158,8 @@ export default {
           return "เลข จาก เรื่อง";
         case "KTC":
           return "MCQ Keep The Chip";
+        case "CC":
+          return "Casino Confident";
         default:
           return "";
       }

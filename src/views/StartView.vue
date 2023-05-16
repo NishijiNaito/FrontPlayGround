@@ -151,9 +151,7 @@
                     <option value="WDWH">ใคร ทำอะไร ที่ไหน อย่างไร</option>
                     <option value="NFS">เลข จาก เรื่อง</option>
                     <option value="KTC">MCQ Keep The Chip</option>
-                    <option disabled value="MCQCASC">
-                      MCQ Casino Confident [ยังไม่เปิด]
-                    </option>
+                    <option value="CC">Casino Confident</option>
                   </select>
                 </div>
               </div>
