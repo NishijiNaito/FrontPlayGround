@@ -186,6 +186,37 @@
                 </div>
               </div>
 
+              <div class="mb-3 text-center">
+                <label class="form-label">Join As</label>
+                <div class="form-selectgroup">
+                  <label class="form-selectgroup-item">
+                    <input
+                      type="radio"
+                      name="icons"
+                      value="MCQ"
+                      class="form-selectgroup-input"
+                      v-model="gameData.quiz.quiz_type"
+                    />
+                    <span class="form-selectgroup-label">
+                      <i class="fas fa-check-square"></i>
+                      Multiple Choice Quiz
+                    </span>
+                  </label>
+                  <label class="form-selectgroup-item">
+                    <input
+                      type="radio"
+                      name="icons"
+                      value="SORT"
+                      v-model="gameData.quiz.quiz_type"
+                      class="form-selectgroup-input"
+                    />
+                    <span class="form-selectgroup-label">
+                      <i class="fas fa-sort-numeric-down"></i> Sorting
+                    </span>
+                  </label>
+                </div>
+              </div>
+
               <form @submit.prevent="startQuiz" class="">
                 <div class="row justify-content-center my-text">
                   <div class="col-md-6">
@@ -267,7 +298,10 @@
                   </div>
                 </div>
                 <div></div>
-                <div class="row justify-content-center my-text">
+                <div
+                  v-if="gameData.quiz.quiz_type == 'MCQ'"
+                  class="row justify-content-center my-text"
+                >
                   <div
                     class="col-md-6 mb-3"
                     v-for="(a, idx) in gameData.quiz.quiz_choice"
@@ -340,14 +374,66 @@
                   </div>
                 </div>
 
+                <div v-else class="row justify-content-center my-text">
+                  <div
+                    class="col-md-6 mb-3"
+                    v-for="(a, idx) in answerData.answer_sort"
+                    :key="idx"
+                  >
+                    <div class="input-group">
+                      <span class="input-group-text"
+                        >Position {{ idx + 1 }}</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        v-model="answerData.answer_sort[idx]"
+                        :placeholder="'Position ' + (idx + 1)"
+                        required
+                      />
+
+                      <button
+                        class="btn btn-outline-danger d-none d-md-block"
+                        type="button"
+                        id="button-addon2"
+                        v-if="answerData.answer_sort.length > 3"
+                        @click="answerData.answer_sort.splice(idx, 1)"
+                      >
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="input-group d-block d-md-none">
+                      <button
+                        class="btn btn-outline-danger w-50"
+                        type="button"
+                        id="button-addon2"
+                        v-if="answerData.answer_sort.length > 3"
+                        @click="answerData.answer_sort.splice(idx, 1)"
+                      >
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <button
+                      type="button"
+                      @click="answerData.answer_sort.push('')"
+                      class="w-100 btn btn-info mt-3"
+                    >
+                      Add Choice
+                    </button>
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   class="w-100 btn btn-success mt-3"
                   v-if="
-                    answerData.answer != '' &&
-                    gameData.quiz.quiz_choice.findIndex(
-                      (e) => e == answerData.answer
-                    ) != -1
+                    (answerData.answer != '' &&
+                      gameData.quiz.quiz_choice.findIndex(
+                        (e) => e == answerData.answer
+                      ) != -1) ||
+                    gameData.quiz.quiz_type != 'MCQ'
                   "
                 >
                   Start Question
@@ -531,8 +617,11 @@
               <h3 class="text-center">
                 {{ gameData.quiz.quiz_choice.join(" / ") }}
               </h3>
-              <h3 class="text-center">
+              <h3 class="text-center" v-if="gameData.quiz.quiz_type == 'MCQ'">
                 {{ answerData.answer }}
+              </h3>
+              <h3 class="text-center" v-else>
+                {{ answerData.answer_sort.join(" / ") }}
               </h3>
               <button @click="toPHASE9" class="w-100 btn btn-success">
                 เข้าสู่ PHASE 9 สรุปผล
@@ -600,7 +689,12 @@
               <h1>Not Play</h1>
             </div>
             <div class="card-body text-danger" v-else-if="gameData.phase == 5">
-              <h1>{{ pl.chip_unchoose }} Remain</h1>
+              <h1 v-if="gameData.quiz.quiz_type == 'MCQ'">
+                {{ pl.chip_unchoose }} Remain
+              </h1>
+              <h1 v-else>
+                {{ pl.chip_choice.filter((e) => e == null).length }} Rank Remain
+              </h1>
             </div>
             <div class="card-body" v-else-if="gameData.phase == 7">
               <h1>{{ pl.chip_choice.join(" / ") }}</h1>
@@ -624,7 +718,7 @@ export default {
     return {
       gameData: {},
       playerData: [],
-      answerData: { answer: "" },
+      answerData: { answer: "", answer_sort: [] },
       timerData: {},
       quizList: [],
       showPic: false,
@@ -679,26 +773,38 @@ export default {
         "http://gsx2json.com/api?id=1wP7EMy2Wjyo5S9bA2DW3UTggqFk52XB_c13frEC08h4&sheet=Quiz&columns=false"
       );
 
-      this.quizList = res.data.rows.filter((e) => e.quiz_type == "MCQ");
+      this.quizList = res.data.rows.filter(
+        (e) =>
+          e.quiz_type == "MCQ" ||
+          (e.quiz_type == "SORT" && e.choice_3 != undefined)
+      );
 
       localStorage.setItem("quizList", JSON.stringify(this.quizList));
       console.log(res.data.rows);
     },
     selectQuiz(quiz_id) {
       let quiz = this.quizList.find((e) => e.quiz_id == quiz_id);
+      this.gameData.quiz.quiz_type = quiz.quiz_type;
       this.gameData.quiz.quiz_topic = quiz.quiz_topic;
       this.gameData.quiz.quiz_question = quiz.quiz_question;
-      this.answerData.answer = quiz.quiz_answer;
 
       if (quiz.quiz_picLink)
         this.gameData.quiz.quiz_picLink = quiz.quiz_picLink;
-
-      this.gameData.quiz.quiz_choice = [];
-
       let i = 1;
-      while (quiz["choice_" + i]) {
-        this.gameData.quiz.quiz_choice.push(quiz["choice_" + i]);
-        i++;
+      this.gameData.quiz.quiz_choice = [];
+      this.answerData.answer = "";
+      this.answerData.answer_sort = [];
+      if (quiz.quiz_type == "MCQ") {
+        this.answerData.answer = quiz.quiz_answer;
+        while (quiz["choice_" + i]) {
+          this.gameData.quiz.quiz_choice.push(quiz["choice_" + i]);
+          i++;
+        }
+      } else if (quiz.quiz_type == "SORT") {
+        while (quiz["choice_" + i]) {
+          this.answerData.answer_sort.push(quiz["choice_" + i]);
+          i++;
+        }
       }
 
       this.$refs.mo.click();
@@ -844,6 +950,7 @@ export default {
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 1 - prepareQuiz
     toPHASE1() {
       let dat = {
         roomId: this.gameRoom.roomId,
@@ -855,6 +962,7 @@ export default {
       dat.gameData = { ...this.gameData };
       dat.gameData.phase = 1;
       dat.gameData.quiz = {
+        quiz_type: "MCQ",
         quiz_topic: "",
         quiz_question: "",
         quiz_choice: ["", ""],
@@ -862,10 +970,12 @@ export default {
       };
       dat.gameData.answer = {
         answer: "",
+        answer_sort: [],
       };
 
       dat.answerData = {
         answer: "",
+        answer_sort: ["", "", ""],
       };
 
       dat.timerData = { fullTime: null, remainTime: null, millTime: null };
@@ -883,8 +993,21 @@ export default {
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 2 - ShowTopic / Place Bet Play
     startQuiz() {
       // toPhase 2
+
+      if (this.gameData.quiz.quiz_type == "SORT") {
+        let tmp_rand = [...this.answerData.answer_sort];
+
+        this.gameData.quiz.quiz_choice = [];
+        while (tmp_rand.length != 0) {
+          let randc = Math.floor(Math.random() * tmp_rand.length);
+          this.gameData.quiz.quiz_choice.push(tmp_rand[randc]);
+          tmp_rand.splice(randc, 1);
+        }
+      }
+
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -892,6 +1015,7 @@ export default {
         game: this.gameRoom.game,
         uuid: this.gameRoom.uuid,
       };
+
       dat.gameData = { ...this.gameData };
 
       dat.gameData.phase = 2;
@@ -905,23 +1029,14 @@ export default {
         d.chip_unchoose = 0;
         d.chip_choice = [];
 
-        for (
-          let index = 0;
-          index < this.gameData.quiz.quiz_choice.length;
-          index++
-        ) {
-          d.chip_choice.push(0);
-        }
-
         d.quiz_play = false;
         d.lockDown = false;
         return d;
       });
       dat.answerData = this.answerData;
-
-      // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 3 - ShowBet
     toPHASE3() {
       // toPhase 3
       let dat = {
@@ -941,6 +1056,7 @@ export default {
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 4 - ShowQuiz then Show Answer
     toPHASE4() {
       // toPhase 4
       let dat = {
@@ -960,6 +1076,7 @@ export default {
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 5 - StartGame
     toPHASE5() {
       // toPhase 5
       let dat = {
@@ -987,7 +1104,11 @@ export default {
           index < this.gameData.quiz.quiz_choice.length;
           index++
         ) {
-          d.chip_choice.push(0);
+          if (this.gameData.quiz.quiz_type == "MCQ") {
+            d.chip_choice.push(0);
+          } else {
+            d.chip_choice.push(null);
+          }
         }
 
         d.lockDown = false;
@@ -996,6 +1117,7 @@ export default {
 
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 6 - Lock Down (Time up for answer)
     toPHASE6() {
       // toPhase 6
       let dat = {
@@ -1012,6 +1134,7 @@ export default {
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 7 - Reveal Player Answer
     toPHASE7() {
       // toPhase 7
       let dat = {
@@ -1028,6 +1151,7 @@ export default {
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 8 - Reveal Correct Answer
     toPHASE8() {
       // toPhase 8
       let dat = {
@@ -1043,21 +1167,44 @@ export default {
 
       dat.playerData = this.playerData.map((e) => {
         let d = { ...e };
+        d.result_quiz_score = 0;
+
+        if (this.gameData.quiz.quiz_type == "MCQ") {
+          for (
+            let index = 0;
+            index < this.gameData.quiz.quiz_choice.length;
+            index++
+          ) {
+            if (
+              this.gameData.quiz.quiz_choice[index] == this.answerData.answer
+            ) {
+              d.score += e.chip_choice[index];
+              d.result_quiz_score += e.chip_choice[index];
+            }
+          }
+        } else if (this.gameData.quiz.quiz_type == "SORT") {
+          let max_correct = this.gameData.quiz.quiz_choice.length;
+          let my_correct = 0;
+
+          for (
+            let index = 0;
+            index < this.gameData.quiz.quiz_choice.length;
+            index++
+          ) {
+            if (e.chip_choice[index] == this.answerData.answer_sort[index]) {
+              my_correct++;
+            }
+          }
+          d.result_quiz_score += Math.round(
+            (my_correct / max_correct) * d.chip_inplay
+          );
+          d.score += d.result_quiz_score;
+        }
+
         d.chip_unchoose = 0;
 
         d.chip_inplay = 0;
-        d.result_quiz_score = 0;
 
-        for (
-          let index = 0;
-          index < this.gameData.quiz.quiz_choice.length;
-          index++
-        ) {
-          if (this.gameData.quiz.quiz_choice[index] == this.answerData.answer) {
-            d.score += e.chip_choice[index];
-            d.result_quiz_score += e.chip_choice[index];
-          }
-        }
         if (d.quiz_play && d.quiz_play_remain > 0) {
           d.quiz_play_remain--;
         }
@@ -1071,6 +1218,7 @@ export default {
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
     },
+    // 9 - Summary Remaining
     toPHASE9() {
       // toPhase 9
       let dat = {

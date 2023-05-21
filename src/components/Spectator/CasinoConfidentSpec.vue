@@ -66,7 +66,7 @@
                 v-for="(c, idx) in gameData.quiz.quiz_choice"
                 :key="idx"
               >
-                <div class="card" :class="'choice-' + (idx + 1)">
+                <div class="card h-100" :class="'choice-' + (idx + 1)">
                   <div
                     class="card-body text-center"
                     v-if="gameData.showNow > idx"
@@ -120,7 +120,7 @@
                 v-for="(c, idx) in gameData.quiz.quiz_choice"
                 :key="idx"
               >
-                <div class="card" :class="'choice-' + (idx + 1)">
+                <div class="card h-100" :class="'choice-' + (idx + 1)">
                   <div class="card-body text-center">{{ c }}</div>
                 </div>
               </div>
@@ -162,6 +162,7 @@
                 'row-cols-3': gameData.quiz.quiz_choice.length > 4,
                 'row-cols-2': gameData.quiz.quiz_choice.length <= 4,
               }"
+              v-if="gameData.quiz.quiz_type == 'MCQ'"
             >
               <div
                 class="col"
@@ -169,11 +170,32 @@
                 :key="idx"
               >
                 <div
-                  class="card"
+                  class="card h-100"
                   :class="'choice-' + (idx + 1)"
                   v-if="c == gameData.answer.answer"
                 >
                   <div class="card-body text-center">{{ c }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="row row-gap-2"
+              :class="{
+                'row-cols-3': gameData.quiz.quiz_choice.length > 4,
+                'row-cols-2': gameData.quiz.quiz_choice.length <= 4,
+              }"
+              v-if="gameData.quiz.quiz_type == 'SORT'"
+            >
+              <div
+                class="col"
+                v-for="(c, idx) in gameData.answer.answer_sort"
+                :key="idx"
+              >
+                <div class="card h-100">
+                  <div class="card-body text-center">
+                    {{ idx + 1 }} | {{ c }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -193,6 +215,17 @@
                   "
                   :src="gameData.quiz.quiz_picLink"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else-if="gameData.phase == 9">
+        <div class="row align-items-center">
+          <div class="col-lg-6 col-md-6 col-sm-12 mx-auto mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h1 class="text-center">สรุปผล</h1>
               </div>
             </div>
           </div>
@@ -249,7 +282,12 @@
               class="card-body text-danger"
               v-else-if="gameData.phase == 5 && pl.quiz_play"
             >
-              <h1>{{ pl.chip_unchoose }} Remain</h1>
+              <h1 v-if="gameData.quiz.quiz_type == 'MCQ'">
+                {{ pl.chip_unchoose }} Remain
+              </h1>
+              <h1 v-else>
+                {{ pl.chip_choice.filter((e) => e == null).length }} Rank Remain
+              </h1>
             </div>
             <div class="card-body text-danger" v-else-if="gameData.phase == 5">
               <h1>Not Play</h1>
@@ -265,6 +303,7 @@
                   'row-cols-3': gameData.quiz.quiz_choice.length > 4,
                   'row-cols-2': gameData.quiz.quiz_choice.length <= 4,
                 }"
+                v-if="gameData.quiz.quiz_type == 'MCQ'"
               >
                 <div
                   class="col"
@@ -274,6 +313,22 @@
                   <div class="card" :class="'choice-' + (idx + 1)">
                     <div class="card-body text-center">
                       {{ pl.chip_choice[idx] }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="row row-gap-2"
+                v-if="gameData.quiz.quiz_type == 'SORT'"
+              >
+                <div
+                  class="col-12 col-xl-6"
+                  v-for="(c, idx) in gameData.quiz.quiz_choice"
+                  :key="idx"
+                >
+                  <div class="card h-100">
+                    <div class="card-body text-center">
+                      {{ idx + 1 }} | {{ pl.chip_choice[idx] }}
                     </div>
                   </div>
                 </div>
@@ -295,6 +350,7 @@
                   'row-cols-3': gameData.quiz.quiz_choice.length > 4,
                   'row-cols-2': gameData.quiz.quiz_choice.length <= 4,
                 }"
+                v-if="gameData.quiz.quiz_type == 'MCQ'"
               >
                 <div
                   class="col"
@@ -312,8 +368,40 @@
                   </div>
                 </div>
               </div>
+
+              <div
+                class="row row-gap-2"
+                v-if="gameData.quiz.quiz_type == 'SORT'"
+              >
+                <div
+                  class="col-12 col-xl-6"
+                  v-for="(c, idx) in pl.chip_choice"
+                  :key="idx"
+                >
+                  <div
+                    class="card text-white"
+                    :class="{
+                      'bg-danger': c != gameData.answer.answer_sort[idx],
+                      'bg-success': c == gameData.answer.answer_sort[idx],
+                    }"
+                  >
+                    <div class="card-body text-center">
+                      {{ idx + 1 }} | {{ c }}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="card-body text-danger" v-else-if="gameData.phase == 8">
+              <h1>Not Play</h1>
+            </div>
+            <div
+              class="card-body text-success"
+              v-else-if="gameData.phase == 9 && pl.quiz_play == true"
+            >
+              <h1>+{{ pl.result_quiz_score }}</h1>
+            </div>
+            <div class="card-body text-danger" v-else-if="gameData.phase == 9">
               <h1>Not Play</h1>
             </div>
             <div v-else></div>

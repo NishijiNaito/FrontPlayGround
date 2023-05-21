@@ -397,7 +397,10 @@
       </div>
       <div v-else-if="gameData.phase == 5">
         <div class="page page-center" v-if="myPlayerData.quiz_play">
-          <div class="row align-items-center">
+          <div
+            class="row align-items-center"
+            v-if="gameData.quiz.quiz_type == 'MCQ'"
+          >
             <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mx-auto">
               <div class="card">
                 <div class="card-body">
@@ -528,6 +531,94 @@
               </div>
             </div>
           </div>
+          <div class="row align-items-center" v-else>
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mx-auto">
+              <div class="card">
+                <div class="card-body">
+                  <h1 class="text-center">
+                    {{ gameData["quiz"].quiz_question }}
+                  </h1>
+                </div>
+              </div>
+              <div class="card mt-3" v-if="gameData.quiz.quiz_picLink">
+                <div class="card-body">
+                  <img style="width: 100%" :src="gameData.quiz.quiz_picLink" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div
+                    class="row row-cols-1 row-cols-lg-2 justify-content-center row-gap-3"
+                  >
+                    <div
+                      class="col"
+                      v-for="(q, idx) in gameData.quiz.quiz_choice"
+                      :key="idx"
+                      @click="choiceSelect = idx"
+                    >
+                      <div
+                        class="card"
+                        :class="{
+                          'card-active': idx == choiceSelect,
+                          'border-success':
+                            myPlayerData.chip_choice.findIndex((e) => e == q) !=
+                            -1,
+                        }"
+                        style="cursor: pointer"
+                      >
+                        <div class="card-body text-center">{{ q }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-gap-2 justify-content-center mt-3"
+                  >
+                    <div
+                      class="col"
+                      @click="rankSelect = idx"
+                      v-for="(sc, idx) in myPlayerData.chip_choice"
+                      :key="idx"
+                      style="cursor: pointer"
+                    >
+                      <div
+                        class="card h-100"
+                        :class="{
+                          'card-active': idx == rankSelect,
+                          'border-success': sc != null,
+                        }"
+                      >
+                        <div class="card-body">
+                          อันดับ{{ idx + 1 }} >
+                          {{ sc == null ? "ยังไม่กำหนด" : sc }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sticky">
+              <div class="card">
+                <div class="card-body">
+                  <h1 class="card-text text-center inline w-100">
+                    Bet Chip : {{ myPlayerData.chip_unchoose }}
+                  </h1>
+
+                  <h3 class="card-text text-center inline w-100">
+                    โปรดเลือกตัวเลือกที่ต้องการ จากนั้นเลือกลำดับที่จะใส่
+                  </h3>
+                  <h3 class="card-text text-center inline w-100">
+                    กดลำดับที่ต้องการเพื่อที่จะลบคำตอบของลำดับนั้น
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="page page-center" v-else>
           <div class="row align-items-center">
@@ -608,6 +699,7 @@
                 <div class="card-body">
                   <div
                     class="row row-cols-1 row-cols-lg-2 justify-content-center row-gap-3"
+                    v-if="gameData.quiz.quiz_type == 'MCQ'"
                   >
                     <div
                       class="col"
@@ -622,6 +714,27 @@
                         <div class="card-footer h-100">
                           <h1 class="card-text text-center inline w-100">
                             {{ myPlayerData.chip_choice[idx] }}
+                          </h1>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="row row-cols-1 row-cols-lg-2 justify-content-center row-gap-3"
+                    v-else-if="gameData.quiz.quiz_type == 'SORT'"
+                  >
+                    <div
+                      class="col"
+                      v-for="(q, idx) in myPlayerData.chip_choice"
+                      :key="idx"
+                    >
+                      <div class="card">
+                        <div class="card-body text-center">
+                          อันดับที่ {{ idx + 1 }}
+                        </div>
+                        <div class="card-footer h-100">
+                          <h1 class="card-text text-center inline w-100">
+                            {{ q }}
                           </h1>
                         </div>
                       </div>
@@ -711,6 +824,7 @@
                 <div class="card-body">
                   <div
                     class="row row-cols-1 row-cols-lg-2 justify-content-center row-gap-3"
+                    v-if="gameData.quiz.quiz_type == 'MCQ'"
                   >
                     <div
                       class="col"
@@ -735,6 +849,66 @@
                         >
                           <h1 class="card-text text-center inline w-100">
                             {{ myPlayerData.chip_choice[idx] }}
+                          </h1>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="row row-cols-1 row-cols-lg-2 justify-content-center row-gap-3"
+                    v-if="
+                      gameData.quiz.quiz_type == 'SORT' &&
+                      myPlayerData.quiz_play
+                    "
+                  >
+                    <div
+                      class="col"
+                      v-for="(q, idx) in myPlayerData.chip_choice"
+                      :key="idx"
+                    >
+                      <div
+                        class="card text-white"
+                        :class="{
+                          'bg-danger': q != gameData.answer.answer_sort[idx],
+                          'bg-success': q == gameData.answer.answer_sort[idx],
+                        }"
+                      >
+                        <div class="card-body text-center">
+                          อันดับที่ {{ idx + 1 }}
+                        </div>
+                        <div
+                          class="card-footer h-100"
+                          :class="{
+                            'bg-danger': q != gameData.answer.answer_sort[idx],
+                            'bg-success': q == gameData.answer.answer_sort[idx],
+                          }"
+                        >
+                          <h1 class="card-text text-center inline w-100">
+                            {{ q }}
+                          </h1>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="row row-cols-1 row-cols-lg-2 justify-content-center row-gap-3"
+                    v-if="
+                      gameData.quiz.quiz_type == 'SORT' &&
+                      !myPlayerData.quiz_play
+                    "
+                  >
+                    <div
+                      class="col"
+                      v-for="(q, idx) in gameData.answer.answer_sort"
+                      :key="idx"
+                    >
+                      <div class="card">
+                        <div class="card-body text-center">
+                          อันดับที่ {{ idx + 1 }}
+                        </div>
+                        <div class="card-footer h-100">
+                          <h1 class="card-text text-center inline w-100">
+                            {{ q }}
                           </h1>
                         </div>
                       </div>
@@ -786,7 +960,64 @@ export default {
       timerData: {},
       myPlayerData: {},
       selectChoice: null,
+      rankSelect: null,
+      choiceSelect: null,
     };
+  },
+  watch: {
+    rankSelect(rs) {
+      // index
+      if (rs != null) {
+        if (this.myPlayerData.chip_choice[rs] != null) {
+          //คะแนนนี้มีอยู่แล้ว
+          this.myPlayerData.chip_choice[rs] = null;
+          this.rankSelect = null;
+          this.choiceSelect = null;
+        } else {
+          // ยังไม่มี
+          if (this.choiceSelect != null) {
+            // เลือกคัวเลือกแล้ว
+
+            this.myPlayerData.chip_choice[rs] =
+              this.gameData.quiz.quiz_choice[this.choiceSelect];
+            this.rankSelect = null;
+            this.choiceSelect = null;
+          }
+        }
+        let dat = {
+          roomId: this.gameRoom.roomId,
+          playerName: this.gameRoom.playerName,
+          mode: this.gameRoom.mode,
+          game: this.gameRoom.game,
+          uuid: this.gameRoom.uuid,
+        };
+        // put myplayerData in dat
+        dat.myPlayerData = this.myPlayerData;
+        this.$socket.emit("playerGameUpdate", dat);
+      }
+    },
+    choiceSelect(cs) {
+      if (cs != null) {
+        if (this.rankSelect != null) {
+          //คะแนนถูกเลือกแล้ว
+
+          this.myPlayerData.chip_choice[this.rankSelect] =
+            this.gameData.quiz.quiz_choice[cs];
+          this.rankSelect = null;
+          this.choiceSelect = null;
+        }
+        let dat = {
+          roomId: this.gameRoom.roomId,
+          playerName: this.gameRoom.playerName,
+          mode: this.gameRoom.mode,
+          game: this.gameRoom.game,
+          uuid: this.gameRoom.uuid,
+        };
+        // put myplayerData in dat
+        dat.myPlayerData = this.myPlayerData;
+        this.$socket.emit("playerGameUpdate", dat);
+      }
+    },
   },
   computed: {
     ...mapGetters(["gameRoom", "gameName"]),
