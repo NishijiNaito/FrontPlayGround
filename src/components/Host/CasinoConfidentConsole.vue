@@ -25,13 +25,14 @@
             กลับไปที่ PHASE 1 ตั้งคำถาม
           </button>
         </div>
-
+        <!-- SECTION HTML SECTION -->
         <transition
           enter-active-class="scale-in-hor-center"
           leave-active-class="scale-out-hor-center"
           mode="out-in"
         >
           <div class="card" v-if="gameData.phase == -1">
+            <!-- ANCHOR PHASE -1 : setup Game -->
             <div class="card-body text-center">
               <h2 class="text-center">PHASE -1 ตั้งค่าเกม</h2>
               <form @submit.prevent="setupGame">
@@ -97,6 +98,7 @@
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 0">
+            <!-- ANCHOR PHASE 0 : Edit Detail -->
             <div class="card-body text-center">
               <h2 class="text-center">PHASE 0 ตั้งค่าผู้เล่น</h2>
 
@@ -106,6 +108,7 @@
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 1">
+            <!-- ANCHOR PHASE 1 : prepareQuiz -->
             <div class="card-body">
               <h2 class="text-center">PHASE 1 ตั้งคำถาม</h2>
               <div class="row justify-content-center mb-3">
@@ -187,7 +190,7 @@
               </div>
 
               <div class="mb-3 text-center">
-                <label class="form-label">Join As</label>
+                <label class="form-label">Question TYPE</label>
                 <div class="form-selectgroup">
                   <label class="form-selectgroup-item">
                     <input
@@ -200,6 +203,20 @@
                     <span class="form-selectgroup-label">
                       <i class="fas fa-check-square"></i>
                       Multiple Choice Quiz
+                    </span>
+                  </label>
+                  <label class="form-selectgroup-item">
+                    <input
+                      type="radio"
+                      name="icons"
+                      value="MCMC"
+                      class="form-selectgroup-input"
+                      v-model="gameData.quiz.quiz_type"
+                    />
+                    <span class="form-selectgroup-label">
+                      <i class="fas fa-check-square me-2"></i>
+                      <i class="fas fa-check-square"></i>
+                      Multiple Choice Multiple Correct
                     </span>
                   </label>
                   <label class="form-selectgroup-item">
@@ -374,6 +391,80 @@
                   </div>
                 </div>
 
+                <div
+                  v-else-if="gameData.quiz.quiz_type == 'MCMC'"
+                  class="row justify-content-center my-text"
+                >
+                  <!-- NOTE MCMC -->
+                  {{ gameData }}
+                  {{ answerData }}
+                  <div
+                    class="col-md-6 mb-3"
+                    v-for="(a, idx) in gameData.quiz.quiz_choice"
+                    :key="idx"
+                  >
+                    <div class="input-group">
+                      <span class="input-group-text">Choice {{ idx + 1 }}</span>
+                      <input
+                        type="text"
+                        class="form-control"
+                        :class="{
+                          'is-valid': answerData.answer?.includes(
+                            gameData.quiz.quiz_choice[idx].id
+                          ),
+                        }"
+                        v-model="gameData.quiz.quiz_choice[idx].text"
+                        :placeholder="'Choice ' + (idx + 1)"
+                        required
+                      />
+                      <button
+                        class="btn btn-outline-success d-none d-md-block"
+                        type="button"
+                        id="button-addon2"
+                        @click="toggleAnswer(gameData.quiz.quiz_choice[idx].id)"
+                      >
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                      </button>
+                      <button
+                        class="btn btn-outline-danger d-none d-md-block"
+                        type="button"
+                        id="button-addon2"
+                        v-if="gameData.quiz.quiz_choice.length > 2"
+                        @click="gameData.quiz.quiz_choice.splice(idx, 1)"
+                      >
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="input-group d-block d-md-none">
+                      <button
+                        class="btn btn-outline-success w-50"
+                        type="button"
+                        id="button-addon2"
+                        @click="toggleAnswer(gameData.quiz.quiz_choice[idx].id)"
+                      >
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                      </button>
+                      <button
+                        class="btn btn-outline-danger w-50"
+                        type="button"
+                        id="button-addon2"
+                        v-if="gameData.quiz.quiz_choice.length > 2"
+                        @click="gameData.quiz.quiz_choice.splice(idx, 1)"
+                      >
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <button
+                      type="button"
+                      @click="addMCMCChoice()"
+                      class="w-100 btn btn-info mt-3"
+                    >
+                      Add Choice
+                    </button>
+                  </div>
+                </div>
                 <div v-else class="row justify-content-center my-text">
                   <div
                     class="col-md-6 mb-3"
@@ -442,6 +533,7 @@
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 2">
+            <!-- ANCHOR PHASE 2 : ShowTopic / Place Bet Play -->
             <div class="card-body">
               <h2 class="text-center">PHASE 2 แสดงหัวข้อ / วางเดิมพัน</h2>
               <h3 class="text-center mb-2">
@@ -492,8 +584,9 @@
              -->
           </div>
           <div class="card" v-else-if="gameData.phase == 3">
+            <!-- ANCHOR PHASE 3 : ShowBet -->
             <div class="card-body">
-              <h2 class="text-center">PHASE 3 แสดงเดิมพัน</h2>
+              <h2 class="text-center">ShowBet / ShowQuiz</h2>
               <h3 class="text-center mb-2">
                 Topic : {{ gameData.quiz.quiz_topic }}
               </h3>
@@ -513,6 +606,8 @@
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 4">
+            <!-- ANCHOR PHASE 4 : ShowQuiz / Show Answer -->
+
             <div class="card-body">
               <h2 class="text-center">PHASE 4 แสดงคำถาม</h2>
               <h3 class="text-center mb-2">
@@ -542,6 +637,8 @@
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 5">
+            <!-- ANCHOR PHASE 5 : Place Chip (Answer the question)  -->
+
             <div class="card-body">
               <h2 class="text-center">PHASE 5 เริ่มตอบ</h2>
               <h3 class="text-center mb-2">
@@ -563,6 +660,8 @@
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 6">
+            <!-- ANCHOR PHASE 6 : Lock Down (Time up for answer)  -->
+
             <div class="card-body">
               <h2 class="text-center">PHASE 6 LockDown</h2>
               <h3 class="text-center mb-2">
@@ -584,6 +683,8 @@
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 7">
+            <!-- ANCHOR PHASE 7 : Reveal Player Answer  -->
+
             <div class="card-body">
               <h2 class="text-center">PHASE 7 แสดงคำตอบ</h2>
               <h3 class="text-center mb-2">
@@ -605,6 +706,8 @@
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 8">
+            <!-- ANCHOR PHASE 8 : Reveal Correct Answer  -->
+
             <div class="card-body">
               <h2 class="text-center">PHASE 8 เฉลยคำตอบ</h2>
               <h3 class="text-center mb-2">
@@ -623,12 +726,17 @@
               <h3 class="text-center" v-else>
                 {{ answerData.answer_sort.join(" / ") }}
               </h3>
+              <h3 class="text-center">
+                {{ answerData.answer_detail }}
+              </h3>
               <button @click="toPHASE9" class="w-100 btn btn-success">
                 เข้าสู่ PHASE 9 สรุปผล
               </button>
             </div>
           </div>
           <div class="card" v-else-if="gameData.phase == 9">
+            <!-- ANCHOR PHASE 9 : Summary Remaining  -->
+
             <div class="card-body">
               <h2 class="text-center">PHASE 9 สรุปผล</h2>
 
@@ -639,6 +747,8 @@
           </div>
           <div v-else></div
         ></transition>
+
+        <!-- !SECTION -->
       </div>
     </div>
 
@@ -718,7 +828,7 @@ export default {
     return {
       gameData: {},
       playerData: [],
-      answerData: { answer: "", answer_sort: [] },
+      answerData: { answer: "", answer_sort: [], answer_detail: "" },
       timerData: {},
       quizList: [],
       showPic: false,
@@ -743,7 +853,43 @@ export default {
   unmounted() {
     this.$socket.off("hostGameInfo");
   },
+  watch: {
+    "gameData.quiz.quiz_type"(dat) {
+      console.log(dat);
+      if (dat == "MCMC") {
+        this.answerData.answer = [];
+        this.gameData.quiz.quiz_choice = [];
+        this.gameData.quiz.quiz_choice.push({ id: this.genCode(6), text: "" });
+        this.gameData.quiz.quiz_choice.push({ id: this.genCode(6), text: "" });
+      } else if (dat == "MCQ") {
+        this.answerData.answer = "";
+        this.gameData.quiz.quiz_choice = ["", ""];
+      }
+    },
+  },
   methods: {
+    // SECTION METHODS
+    addMCMCChoice() {
+      this.gameData.quiz.quiz_choice.push({ id: this.genCode(6), text: "" });
+    },
+    genCode(length) {
+      const charset =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        password += charset.charAt(Math.floor(Math.random() * charset.length));
+      }
+      return password;
+    },
+
+    toggleAnswer(txt) {
+      let idx = this.answerData.answer.findIndex((e) => e == txt);
+      if (idx == -1) {
+        this.answerData.answer.push(txt);
+      } else {
+        this.answerData.answer.splice(idx, 1);
+      }
+    },
     async handleImage(e) {
       // console.log(e.target.files.length);
       // return;
@@ -788,28 +934,40 @@ export default {
       this.gameData.quiz.quiz_topic = quiz.quiz_topic;
       this.gameData.quiz.quiz_question = quiz.quiz_question;
 
-      if (quiz.quiz_picLink)
+      if (
+        quiz.quiz_picLink &&
+        quiz.quiz_picLink != 0 &&
+        quiz.quiz_picLink != "-"
+      )
         this.gameData.quiz.quiz_picLink = quiz.quiz_picLink;
+
+      if (
+        quiz.quiz_answer_detail &&
+        quiz.quiz_answer_detail != 0 &&
+        quiz.quiz_answer_detail != "-"
+      )
+        this.answerData.answer_detail = quiz.quiz_answer_detail;
+
       let i = 1;
       this.gameData.quiz.quiz_choice = [];
       this.answerData.answer = "";
       this.answerData.answer_sort = [];
       if (quiz.quiz_type == "MCQ") {
         this.answerData.answer = quiz.quiz_answer;
-        while (quiz["choice_" + i]) {
+        while (quiz["choice_" + i] && quiz["choice_" + i] != "-") {
           this.gameData.quiz.quiz_choice.push(quiz["choice_" + i]);
           i++;
         }
       } else if (quiz.quiz_type == "SORT") {
-        while (quiz["choice_" + i]) {
+        while (quiz["choice_" + i] && quiz["choice_" + i] != "-") {
           this.answerData.answer_sort.push(quiz["choice_" + i]);
           i++;
         }
       }
-
       this.$refs.mo.click();
     },
     showNow() {
+      //ANCHOR Status
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -822,6 +980,8 @@ export default {
       this.$socket.emit("hostGameUpdate", dat);
     },
     toPHASE0() {
+      //SECTION PHASE 0
+      //NOTE Reset To phase 0
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -860,8 +1020,10 @@ export default {
       });
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
+      //!SECTION
     },
     toPHASEM1() {
+      //SECTION PHASE -1 To RESET GAME
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -906,8 +1068,10 @@ export default {
       });
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
+      //!SECTION
     },
     setupGame() {
+      //SECTION PHASE SETUP GAME -1 TO 0
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -934,7 +1098,7 @@ export default {
       };
 
       dat.timerData = { fullTime: null, remainTime: null, millTime: null };
-
+      //NOTE SET PLAYER DATA
       dat.playerData = this.playerData.map((e) => {
         let d = { ...e };
         d.chip_unscore = +this.$refs.chip_start.value;
@@ -949,9 +1113,11 @@ export default {
       });
       // console.log(dat);
       this.$socket.emit("hostGameUpdate", dat);
+      //!SECTION
     },
     // 1 - prepareQuiz
     toPHASE1() {
+      //ANCHOR PHASE 0 TO 1
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -971,11 +1137,13 @@ export default {
       dat.gameData.answer = {
         answer: "",
         answer_sort: [],
+        answer_detail: "",
       };
 
       dat.answerData = {
         answer: "",
         answer_sort: ["", "", ""],
+        answer_detail: "",
       };
 
       dat.timerData = { fullTime: null, remainTime: null, millTime: null };
@@ -995,7 +1163,7 @@ export default {
     },
     // 2 - ShowTopic / Place Bet Play
     startQuiz() {
-      // toPhase 2
+      //ANCHOR PHASE startQuiz 1 TO 2
 
       if (this.gameData.quiz.quiz_type == "SORT") {
         let tmp_rand = [...this.answerData.answer_sort];
@@ -1038,7 +1206,7 @@ export default {
     },
     // 3 - ShowBet
     toPHASE3() {
-      // toPhase 3
+      //ANCHOR PHASE 2 TO 3
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -1058,7 +1226,7 @@ export default {
     },
     // 4 - ShowQuiz then Show Answer
     toPHASE4() {
-      // toPhase 4
+      //ANCHOR PHASE 3 TO 4
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -1078,6 +1246,7 @@ export default {
     },
     // 5 - StartGame
     toPHASE5() {
+      //ANCHOR PHASE Place Chip 4 TO 5
       // toPhase 5
       let dat = {
         roomId: this.gameRoom.roomId,
@@ -1119,7 +1288,7 @@ export default {
     },
     // 6 - Lock Down (Time up for answer)
     toPHASE6() {
-      // toPhase 6
+      //ANCHOR PHASE 5 TO 6 Lock Down
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -1136,6 +1305,7 @@ export default {
     },
     // 7 - Reveal Player Answer
     toPHASE7() {
+      //ANCHOR PHASE 6 TO 7 Reveal Player Answer
       // toPhase 7
       let dat = {
         roomId: this.gameRoom.roomId,
@@ -1153,7 +1323,7 @@ export default {
     },
     // 8 - Reveal Correct Answer
     toPHASE8() {
-      // toPhase 8
+      //ANCHOR PHASE 7 TO 8 Reveal Correct Answer
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -1220,7 +1390,7 @@ export default {
     },
     // 9 - Summary Remaining
     toPHASE9() {
-      // toPhase 9
+      //ANCHOR PHASE 8 TO 9 Summary Remaining
       let dat = {
         roomId: this.gameRoom.roomId,
         passCode: this.gameRoom.passCode,
@@ -1236,8 +1406,8 @@ export default {
       this.$socket.emit("hostGameUpdate", dat);
     },
   },
+  //!SECTION
 };
 </script>
 
-<style>
-</style>
+<style></style>
